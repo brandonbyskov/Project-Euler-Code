@@ -22,7 +22,9 @@ bool isPalindrome(int x) {
 
 bool isPrime(__int64 x) {
 	if (x < 1) return false;
-	for (__int64 i = 2; i <= sqrt(x); i++) {
+	if (x == 2) return true;
+	if (x % 2 == 0) return false;
+	for (__int64 i = 3; i <= sqrt(x); i += 2) {
 		if (x % i == 0) return false;
 	}
 	return true;

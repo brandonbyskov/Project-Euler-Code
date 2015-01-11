@@ -4,7 +4,7 @@ using namespace std;
 
 
 int main() {
-	cout << problem5(20);
+	cout << problem9(1000);
 	cout << '\n';
 	return 0;
 }
