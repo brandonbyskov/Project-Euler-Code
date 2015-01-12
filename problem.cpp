@@ -292,39 +292,26 @@ int problem14(int max) {
 //yay, a recursive function!
 // Rest in Peace recursive fuction. Lived from Evening of Jan 11, 2015 - Night of Jan 11, 2015
 // One day it went off to do a job, but it never returned :(.
-//__int64 problem15(int grid_size, int pos_x, int pos_y) {
-//	if (pos_x == grid_size - 1 || pos_y == grid_size - 1 ) return grid_size + 1 - ((pos_x < pos_y)? pos_x : pos_y);
-//	else 
-//		return problem15(grid_size, pos_x + 1, pos_y) +
-//				problem15(grid_size, pos_x, pos_y + 1);
-//}
 
 
 // memoization worked much better than recursion. Algorithms: 1, Brandon: 0;(but not really, cause I solved it)
+// Solved prolem using single array, less space required than trangle matrix.
+// recursion was too slow.
 __int64 problem15(int grid_size) {
-	//set up grid of (size+1 * size+1)
-	//only initializes a lower trianngle of the grid
-	__int64** grid = new __int64* [grid_size+1];
-	for (int i = 0; i <= grid_size; i++) {
-		grid[i] = new __int64 [grid_size+1];
-		for (int j = 0; j <= i; j++) {
-			grid[i][j] = 0;
+	__int64* grid = new __int64 [grid_size+1];
+	__int64 num_routes;
+
+	grid[0] = 1;
+	for (int i = 1; i <= grid_size; i++) {
+		for (int j = 1; j < i; j++) {
+			grid[j] += grid[j - 1];
 		}
-	}
-	//set last row all to 1
-	for(int i = 0; i <= grid_size; i++) {
-		grid[grid_size][i] = 1;
-	}
-	//this solves only a triangle of the grid, more efficient
-	for (int i = grid_size - 1; i >= 0; i--) {
-		grid[i][i] = 2* grid[i+1][i];
-		for (int j = i -1; j >= 0; j--) {
-			grid[i][j] += grid[i][j+1];
-			grid[i][j] += grid[i+1][j];
-		}
+		grid[i] = 2 * grid[i - 1];
 	}
 
-	return grid[0][0];
+	num_routes = grid[grid_size];
+	delete [] grid;
+	return num_routes;
 }
 
 int problem16(int power) {
@@ -361,5 +348,6 @@ int problem16(int power) {
 		}
 	}
 
+	delete [] num;
 	return sum;
 }
