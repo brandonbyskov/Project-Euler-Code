@@ -17,6 +17,8 @@ __int64 problem10(int max); //1999999
 int problem12(int divisors); //501
 __int64 problem13(string num, int count, int size); //("[5000-digit string]",100,50)
 int problem14(int max); //999999
+__int64 problem15(int grid_size); //20
+int problem16(int power); //1000
 
 #endif // PROBLEM_H
 
