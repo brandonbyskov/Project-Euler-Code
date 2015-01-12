@@ -3,6 +3,19 @@
 #include <math.h>
 using namespace std;
 
+int numDivisors(int x) {
+	if (x < 0) return 0;
+	if (x == 1) return 1;
+
+	int count = 0;
+	if (sqrt(x) == floor(sqrt(x))) count++; //square number
+
+	for (int i=1; i < sqrt(x); i++) {
+		if (x % i == 0) count += 2; //two divisors, i and x/i
+	}
+	return count;
+}
+
 bool isPalindrome(int x) {
 	if (x < 0) return false;
 

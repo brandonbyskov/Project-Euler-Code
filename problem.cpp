@@ -214,19 +214,32 @@ int problem9(int sum) {
 	else return 0;
 }
 
-//find sum of primes below 'max'
+//find sum of primes up to 'max'
 __int64 problem10(int max) {
-	if (max < 3) return 0;
-	if (max == 3) return 2;
+	if (max < 2) return 0;
+	if (max == 2) return 2;
 
 	__int64 sum = 2;
 
-	for (int i = 3; i < max; i += 2)
+	for (int i = 3; i <= max; i += 2)
 	{
 		if (isPrime(i)) sum += i;
 	}
 
 	return sum;
+}
+
+// returns the smallest triangle number with at least n divisors
+int problem12(int divisors) {
+	if (divisors < 1) return 0;
+	int triangle_number = 0;
+
+	for (int i = 1; i > 0; i++) {
+		triangle_number += i;
+		if (numDivisors(triangle_number) >= divisors)
+			return triangle_number;	
+	}
+	return 0;
 }
 
 //returns the first 10 significant digits of the sum of many large numbers
@@ -251,4 +264,27 @@ __int64 problem13(string num, int count, int size) {
 	//keep only 10 significant digits
 	sum /= pow(10,floor(log10(sum)) + 1 - 10);
 	return sum;
+}
+
+
+//returns the starting number with the longest Collatz sequence
+int problem14(int max) {
+	__int64 n;
+	int longest_n = 0;
+	int longest_sequence = 0;
+
+	for (int i = 1, j = 1; i < max; i++) {
+		j = 1;
+		n = i;
+		for (; n != 1; j++) {
+			if (n % 2 == 0) n /= 2;
+			else n = 3*n +1;
+		}
+		if (j > longest_sequence)
+		{
+			longest_n = i;
+			longest_sequence = j;
+		}
+	}
+	return longest_n;
 }
