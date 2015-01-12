@@ -1,6 +1,6 @@
 #include "problem.h"
 #include "problemsupport.h"
-#include "ttmath/ttmath.h"
+//#include "ttmath/ttmath.h"
 #include <iostream>
 #include <math.h>
 #include <list>
@@ -212,4 +212,43 @@ int problem9(int sum) {
 
 	if (a*a + b*b == c*c) return a*b*c;
 	else return 0;
+}
+
+//find sum of primes below 'max'
+__int64 problem10(int max) {
+	if (max < 3) return 0;
+	if (max == 3) return 2;
+
+	__int64 sum = 2;
+
+	for (int i = 3; i < max; i += 2)
+	{
+		if (isPrime(i)) sum += i;
+	}
+
+	return sum;
+}
+
+//returns the first 10 significant digits of the sum of many large numbers
+__int64 problem13(string num, int count, int size) {
+	if (num.length() != count*size || count < 1 || size < 1) return 0;
+
+	__int64 sum = 0;
+	int segments = ceil ((double)size / 9);
+	int first_segment = size % 9; //size of first number segment
+
+	// iterate over n segments of size 9 digits each (except for first, which may be smaller than 9)
+	for (int i = 0, start = size, seg_size; i < segments; i++) {
+		sum /= 1000000000; //throw away insignificant digits
+		seg_size = (i == 0)? first_segment : 9;
+		start = size - first_segment - 9*i;
+
+		for (int j = 0; j < count; j++) {
+			sum += atoi( ((num.substr(start+j*size, seg_size).c_str())) );		
+		}
+	}
+
+	//keep only 10 significant digits
+	sum /= pow(10,floor(log10(sum)) + 1 - 10);
+	return sum;
 }
