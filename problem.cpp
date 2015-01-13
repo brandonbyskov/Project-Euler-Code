@@ -375,6 +375,31 @@ int problem18(string filename, int lines) {
 	return max_path;
 }
 
+// finds the smallest odd composite number that is not equal to the sum of a prime and 2 times a square
+int problem46() {
+	list<int> primes;
+	int temp = 0;
+	int solution = 0;
+	
+	primes.push_back(2);
+	for (int i = 3; solution == 0; i += 2)
+	{
+		if (isPrime(i)) primes.push_back(i);
+		else {
+			for (list<int>::reverse_iterator rit=primes.rbegin(); temp != i && rit!=primes.rend(); rit++) {
+				temp = 0;
+				for (int j = 1; i > temp;j++) {
+
+					temp = (*rit) + (2 * j * j);
+				}
+			}
+			if (i < temp) solution = i;
+		}
+	}
+
+	return solution;
+}
+
 //finds last 10 digits of series 1^1 + 2^2 + 3^3 + ... + n^n
 __int64 problem48(int max) {
 	__int64 sum = 0;

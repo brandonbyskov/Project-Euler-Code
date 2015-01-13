@@ -20,7 +20,8 @@ int problem14(int max); //999999
 __int64 problem15(int grid_size); //20
 int problem16(int power); //1000
 int problem18(string filename, int lines); //("data/p018_triangle.txt", 15)
-__int64 problem48(int max);
+int problem46();
+__int64 problem48(int max); //1000
 int problem67(string filename, int lines); //("data/p067_triangle.txt", 1000)
 
 #endif // PROBLEM_H
