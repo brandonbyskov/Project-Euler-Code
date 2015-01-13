@@ -418,6 +418,46 @@ __int64 problem48(int max) {
 	return sum;
 }
 
+int problem50(int max) {
+	if(max < 2) return 0;
+	if(max < 5) return 2;
+	vector<int> primes;
+	int max_solution = 0;
+
+	primes.push_back(2);
+
+	for (int terms = 1, sum = 0; ; terms++) {
+		sum = 0;
+		//get initial primes
+		for(int k = 0; k < terms; k++) {
+			if(k < primes.size())
+				sum += primes[k];
+			else {
+				primes.push_back(getNextPrime(primes[k-1]));
+				sum += primes[k];
+			}
+		}
+		if (sum > max) break;
+
+		//iterate throught primes, maintaining number of consecutive terms
+		for (int i = 0, j = terms; !isPrime(sum) && sum <= max; i++, j++) {
+			if(j < primes.size()) {
+				sum -= primes[i];
+				sum += primes[j];
+			} else {
+				primes.push_back(getNextPrime(primes[j-1]));
+				sum -= primes[i];
+				sum += primes[j];
+			}
+		}
+		if (sum <= max) {
+			max_solution = (sum > max_solution) ? sum : max_solution;
+		}		
+	}
+
+	return max_solution;
+}
+
 int problem67(string filename, int lines) {
 	return problem18(filename, lines);
 }

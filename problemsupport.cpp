@@ -42,3 +42,16 @@ bool isPrime(__int64 x) {
 	}
 	return true;
 }
+
+int getNextPrime(int x) {
+	if (x < 2) return 2;
+
+	if (x % 2 == 0) x +=1;
+	else x += 2;
+
+	while (!isPrime(x)) {
+		x += 2;
+	}
+
+	return x;
+}
