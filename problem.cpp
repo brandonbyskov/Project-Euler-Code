@@ -1,9 +1,11 @@
 #include "problem.h"
 #include "problemsupport.h"
+#include "fileio.h"
 //#include "ttmath/ttmath.h"
 #include <iostream>
 #include <math.h>
 #include <list>
+#include <stack>
 #include <stdlib.h>
 using namespace std;
 
@@ -350,4 +352,29 @@ int problem16(int power) {
 
 	delete [] num;
 	return sum;
+}
+
+int problem18(string filename, int lines) {
+	int** triangle = readTriangle(filename, lines);
+	int max_path;
+	//cout << "lol";
+	if (triangle) {
+		//cout << "lol";
+		for (int i = lines - 1; i > 0; i--) {
+			for (int j = 0; j < i; j++) {
+				//cout << triangle[i][]
+				triangle[i-1][j] += (triangle[i][j] > triangle[i][j+1]) ? triangle[i][j] : triangle[i][j+1];
+			}
+			//cout<<'\n';
+			delete [] triangle[i];
+		}
+	}
+	max_path = triangle[0][0];
+	delete [] triangle[0];
+	delete [] triangle;
+	return max_path;
+}
+
+int problem67(string filename, int lines) {
+	return problem18(filename, lines);
 }
