@@ -375,6 +375,24 @@ int problem18(string filename, int lines) {
 	return max_path;
 }
 
+//finds last 10 digits of series 1^1 + 2^2 + 3^3 + ... + n^n
+__int64 problem48(int max) {
+	__int64 sum = 0;
+	__int64 power;
+
+	for (int i = 1; i <= max; i++) {
+		power = i;
+		for (int j = 2; j <= i; j++) {
+			power  = (power * i) % 10000000000;
+
+		}
+		sum += power;
+		sum %= 10000000000;
+	}
+
+	return sum;
+}
+
 int problem67(string filename, int lines) {
 	return problem18(filename, lines);
 }
