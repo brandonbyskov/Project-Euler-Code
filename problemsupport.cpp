@@ -33,12 +33,21 @@ bool isPalindrome(int x) {
 	return true;
 }
 
+bool isPentagonal(__int64 x) {
+	if (x <= 0) return false;
+
+	__int64 i = ceil(sqrt((2*x)/3));
+	if( x == i*(3*i - 1)/2) return true;
+
+	return false;
+}
+
 bool isPrime(__int64 x) {
 	if (x < 2) return false;
-	if (x == 2) return true;
-	if (x % 2 == 0) return false;
-	for (__int64 i = 3; i <= sqrt(x); i += 2) {
-		if (x % i == 0) return false;
+	if (x == 2 || x == 3) return true;
+	if (x % 2 == 0 || x % 3 == 0) return false;
+	for (int i = 5; i <= sqrt(x); i += 6) {
+		if (x % (i) == 0 || x % (i + 2) == 0) return false;
 	}
 	return true;
 }

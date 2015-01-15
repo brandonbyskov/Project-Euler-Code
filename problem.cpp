@@ -375,6 +375,30 @@ int problem18(string filename, int lines) {
 	return max_path;
 }
 
+//finds smallest (x - y) such that x, y, x + y, and x - y are pentagonal
+int problem44() {
+	int difference = 1000000000;
+	__int64 x = 5;
+	__int64 y = 1;
+
+	for (int i = 4; i < difference; )
+	{		
+		for (int j = i - 3; j > 0 && x - y < difference; j -= 3) {
+			
+			if (isPentagonal(x - y) && isPentagonal(x + y)) {
+				difference = x - y;
+			}
+			y -= j;
+		}
+
+		i += 3;
+		y = x;
+		x += i;
+	}
+
+	return difference;
+}
+
 // finds the smallest odd composite number that is not equal to the sum of a prime and 2 times a square
 int problem46() {
 	list<int> primes;
@@ -460,4 +484,49 @@ int problem50(int max) {
 
 int problem67(string filename, int lines) {
 	return problem18(filename, lines);
+}
+
+//this implementation is very slow, primality testing is causeing most of the slowdown. 
+// use the more effiecient prime test algorithm or test for primes less often.
+__int64 problem196(__int64 x, __int64 y) {
+
+	__int64 sum = 0;
+	bool** grid = new bool* [5];
+	for (int i =0; i < 5; i++) {
+		grid[i] = new bool [5];
+		for (int j = 0; j < 5; j++) {
+			grid[i][j] = false;
+		}
+	}
+
+	__int64* int_grid = new __int64 [5];
+
+	if (x % 2 == 1) {
+		__int64 value = ((x * (x - 1)) / 2) + 1;
+		int_grid[0] = value - (2*x-3);
+		int_grid[1] = value - (x - 1);
+		int_grid[2] = value;
+		int_grid[3] = value + (x);
+		int_grid[4] = value + (2*x + 1);
+
+		int j;
+		for (int i = 0; i < x; i++) {
+			if (i%1000 == 0) cout<<i<<'\n';
+			j = i % 5;
+
+			grid[(j+2)%5][0] = (i>=x-2)? false : isPrime(int_grid[0]++);
+			grid[(j+2)%5][1] = (i>=x-1)? false : isPrime(int_grid[1]++);
+			grid[(j+2)%5][2] = isPrime(int_grid[2]++);
+			grid[(j+2)%5][3] = isPrime(int_grid[3]++);
+			grid[(j+2)%5][4] = isPrime(int_grid[4]++);
+
+			if (grid[j][2] && ( (grid[j][1] && (grid[(j+4)%5][0] || grid[(j+1)%5][0])) || 
+								(grid[(j+4)%5][3] && (grid[(j+4)%5][4] || grid[(j+3)%5][2])) || 
+								(grid[(j+1)%5][3] && (grid[(j+1)%5][4] || grid[(j+2)%5][2])) ||
+								(grid[j][1]+grid[(j+4)%5][3]+grid[(j+1)%5][3] > 1)
+								) ) {sum+=int_grid[2]-3;}
+
+		}
+	}
+	return sum;
 }
