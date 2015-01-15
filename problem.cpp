@@ -486,6 +486,37 @@ int problem67(string filename, int lines) {
 	return problem18(filename, lines);
 }
 
+//took 2 minutes, but seems reasonable
+int problem92(int max) {
+	bool * to89 = new bool [numDigits(max)*81];
+	int chain;
+	int chain_next;
+	int sum= 0;
+
+	for (int i = 1,j = 1; i <= numDigits(max)*81; i++) {
+		chain = i;
+
+		while (chain != 89 && chain != 1) {
+			chain_next = 0;
+			for (int j = 1; j <= numDigits(chain); j++) {
+				chain_next += pow(getDigit(chain,j), 2);
+			}
+			chain = chain_next;
+		}
+		to89[i-1] = (chain == 89);
+	}
+
+	for (int i = 1; i <= max; i++) {
+		chain = 0;
+		for (int j = 1; j <= numDigits(i); j++) {
+			chain += pow(getDigit(i,j), 2);
+		}
+		sum += to89[chain-1];
+	}
+
+	return sum;
+}
+
 //this implementation is very slow, primality testing is causeing most of the slowdown. 
 // use the more effiecient prime test algorithm or test for primes less often.
 __int64 problem196(__int64 x, __int64 y) {

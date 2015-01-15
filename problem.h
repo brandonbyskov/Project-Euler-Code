@@ -25,6 +25,7 @@ int problem46();
 __int64 problem48(int max); //1000
 int problem50(int max); //999999
 int problem67(string filename, int lines); //("data/p067_triangle.txt", 1000)
+int problem92(int max); //9999999
 __int64 problem196(__int64 x, __int64 y);
 
 #endif // PROBLEM_H
