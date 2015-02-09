@@ -6,6 +6,7 @@
 #include <math.h>
 #include <list>
 #include <stack>
+#include <queue>
 #include <stdlib.h>
 using namespace std;
 
@@ -517,8 +518,9 @@ int problem92(int max) {
 	return sum;
 }
 
-//this implementation is very slow, primality testing is causeing most of the slowdown. 
-// use the more effiecient prime test algorithm or test for primes less often.
+// This implementation is very slow, primality testing is causeing most of the slowdown. 
+// Use the more effiecient prime test algorithm or test for primes less often.
+// The modulus stuff is a mess also, I could clean that up with some structs or other workaround.
 __int64 problem196(__int64 x, __int64 y) {
 
 	__int64 sum = 0;
@@ -556,8 +558,150 @@ __int64 problem196(__int64 x, __int64 y) {
 								(grid[(j+1)%5][3] && (grid[(j+1)%5][4] || grid[(j+2)%5][2])) ||
 								(grid[j][1]+grid[(j+4)%5][3]+grid[(j+1)%5][3] > 1)
 								) ) {sum+=int_grid[2]-3;}
-
 		}
 	}
 	return sum;
+}
+
+//Calculates the smallest number to have 2^500500 divisors
+__int64 problem500() {
+	__int64 prod = 2; // cumulative product
+	queue<int> squares; //stores the square of last used value
+	squares.push(4);
+	int prime = 3;
+
+	for (int i = 2; i <= 500500; i++) {
+		if(prime < squares.front()) {
+			prod = (prod * prime) % 500500507;
+			if (prime < 2716) squares.push(prime*prime);
+			prime = getNextPrime(prime);
+		} else {
+			prod = (prod * squares.front()) % 500500507;
+			squares.push(squares.front()*squares.front());
+			squares.pop();
+		}
+	}
+	return prod;
+}
+
+//TODO: generate list of primes <= 100.
+//i has factors 1, a prime, prime || prime*prime, prime || prime*prime, all <sqrt(i)
+__int64 problem501(__int64 max, int divisors) {
+	if (max < 24) return 0;
+	__int64 count = 0;
+	__int64 maxPrime = max/4;
+	int numPrimes = (int) ( 1.25*(max/4)/log(max/4));
+	__int64* primes = new __int64[numPrimes];
+	/*for (int i = 0, j = 2; j < maxPrime; i++, j = getNextPrime(j)) {
+		primes[i] = j;
+		numPrimes = i + 1;
+	}*/
+
+	int maxUnderCube = 0;
+	for (int i = 0, p = 2; p <= maxPrime; i++) {
+		primes[i] = p;
+		numPrimes = i + 1;
+		p = getNextPrime(p);
+		if (maxUnderCube == 0 && p > pow(max,(double)1/3)) maxUnderCube = i;
+	}
+	count = (maxUnderCube)*(maxUnderCube)*(maxUnderCube-1)-3;
+	__int64 d1,d2,d3 = 0;
+	__int64 value = 0;
+	int temp = 0;
+	for (int i = 0;i<maxUnderCube+1;i++) {
+		for (int j = i;j<numPrimes;j++) {
+			d1 = primes[i];
+				if (i == j) d2 = (__int64)primes[j]*d1;
+				else d2 = primes[j];
+			for (int k = maxUnderCube+1>j?maxUnderCube+1:j;k<numPrimes && primes[k]<=max/(d1*d2);k++) {
+				
+				if (j == k) d3 = (__int64)primes[k]*d2;
+				else d3 = primes[k];
+				value = d1*d2*d3;//primes[i]*primes[j]*primes[k];
+				
+				
+				if (value <= max && value > 0) {
+					//if (numDivisors(value) == 8 ) cout<<value<<"!!!";
+					if (ceil(sqrt(value)) != floor(sqrt(value)) ) {
+						//cout<<value<<'\n';
+						count++;
+					}
+				} else {
+					if (i==j || j==k) continue;
+					else break;
+				}
+			}
+		}
+		//numPrimes = temp;
+	}
+
+	cout<<"Prime "<<numPrimes<<": "<<primes[numPrimes-1]<<'\n';
+
+	bool primeFlag = true;
+	int d[3];
+	for (__int64 i = 24, num = 24, d = 0; i <= max; i++, d = 0) {
+		/*if (numDivisors(i) == divisors) {
+			count += 1;
+		}*/
+
+		//A2:
+		//if (sqrt(i) == floor(sqrt(i)) ) continue; //square number
+
+		//for (int j = 2; j < sqrt(i) && d <= divisors; j++) {
+		//	if (i % j == 0) d += 2; //two divisors, i and x/i
+		//}
+		//if (d == divisors) count++;
+
+		//A3:
+		//if (sqrt(i) == floor(sqrt(i)) ) continue; //square number
+		//
+		//primeFlag = true;
+		//num = i;
+		//for (int j = 2, k = 3; j <= sqrt(i) && k > 0; j++) {
+
+		//	if (num % j == 0) {
+		//		num /= j;
+		//		if (k == 3) d1 = j;
+		//		if (k == 2) d2 = j;
+		//		k--;
+		//		if (k == 1) {
+		//			j++;
+		//			if (num == j) {
+		//				count++;
+		//				//cout << i <<'\t'<<numDivisors(i)<<'\n';
+		//				break;
+		//			}
+		//			if (( num < j) ) break;
+		//			if (num % j == 0) break;
+		//			for( ;j <= num/2; j += 1) {
+		//				if (num % (j) == 0) {
+		//					if (i == num * j) {}
+		//					else {
+		//						primeFlag = false;
+		//						break;
+		//					}
+		//				}
+		//			}
+		//			if (primeFlag == true) {count++;}//cout << i <<'\t'<<numDivisors(i)<<'\n';}
+		//			k--;
+		//		}
+		//		//if(k == 0 && num == 1) count++;
+		//			
+		//		
+		//	}
+		//}
+
+		//A4 incomplete:
+		/*num = i;
+		for (int j = 0; j < numPrimes && primes[j] < sqrt(i); j++) {
+			if (num % primes[j] == 0) {
+				num /= i;
+				;
+			}
+
+		}*/
+
+		
+	}
+	return count;
 }

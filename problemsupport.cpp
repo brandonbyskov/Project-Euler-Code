@@ -11,7 +11,7 @@ int numDigits(int x) {
 	return floor(log10(x)) + 1;
 }
 
-int numDivisors(int x) {
+int numDivisors(__int64 x) {
 	if (x < 0) return 0;
 	if (x == 1) return 1;
 
