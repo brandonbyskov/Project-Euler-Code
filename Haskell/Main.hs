@@ -1,2 +1,6 @@
+import Problem
+
 main = do
-	putStrLn "hello World"
+	let result = problem1 3 5 1000
+	print result
+	putStrLn ""
