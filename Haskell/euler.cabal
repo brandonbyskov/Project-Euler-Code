@@ -16,5 +16,5 @@ cabal-version:       >=1.8
 
 executable euler
   main-is:             Main.hs
-  -- other-modules:       
+  other-modules:       Problem.Support
   build-depends:       base >=4.6

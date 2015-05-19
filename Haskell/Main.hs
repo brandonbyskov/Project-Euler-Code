@@ -1,6 +1,6 @@
 import Problem
 
 main = do
-	let result = problem1 3 5 1000
+	let result = problem3 600851475143
 	print result
 	putStrLn ""
