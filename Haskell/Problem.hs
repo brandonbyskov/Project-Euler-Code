@@ -43,3 +43,17 @@ problem4 numDigits = problem4' (10^numDigits - 1) (10^numDigits - 1) (10^(numDig
       | isPalindrome (x*y) = problem4' (x-1) (x-1) min (x*y)
       | otherwise = problem4' x (y-1) min highest
 
+-- 20
+problem5 :: Int -> Int
+problem5 max = problem5' 2 max
+  where
+    problem5' :: Int -> Int -> Int
+    problem5' x max
+      | x > max = 1
+      | isPrime x = (multiplyPowers x max x) * problem5' (x+1) max
+      | otherwise = problem5' (x+1) max
+    --
+    multiplyPowers :: Int -> Int -> Int -> Int
+    multiplyPowers x max total
+      | total * x > max = total
+      | otherwise       = multiplyPowers x max (total*x)
