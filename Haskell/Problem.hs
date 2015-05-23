@@ -31,3 +31,15 @@ problem3 x = problem3' x 2 (floor (sqrt (fromIntegral x))) 0
                                 else if isPrime divisor then problem3' x (divisor+1) max divisor
                                      else problem3' x (divisor+1) max highest
       | otherwise             = problem3' x (divisor+1) max highest
+
+-- 3
+problem4 :: Int -> Int
+problem4 numDigits = problem4' (10^numDigits - 1) (10^numDigits - 1) (10^(numDigits - 1)) 0
+  where
+    problem4' :: Int -> Int -> Int -> Int -> Int
+    problem4' x y min highest
+      | y < min = if x == min then highest else problem4' (x-1) (x-1) min highest
+      | x * y <= highest   = if x == y then highest else problem4' (x-1) (x-1) min highest
+      | isPalindrome (x*y) = problem4' (x-1) (x-1) min (x*y)
+      | otherwise = problem4' x (y-1) min highest
+

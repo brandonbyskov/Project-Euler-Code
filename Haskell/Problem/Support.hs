@@ -15,3 +15,8 @@ isPrime x
 -- True if x is divisible by d
 isDivisible :: (Integral a) => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
+
+isPalindrome :: (Integral a, Show a) => a -> Bool
+isPalindrome x 
+  | x < 0 = False
+  | otherwise = (show x) == reverse (show x)
