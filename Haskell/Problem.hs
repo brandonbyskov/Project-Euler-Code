@@ -57,3 +57,12 @@ problem5 max = problem5' 2 max
     multiplyPowers x max total
       | total * x > max = total
       | otherwise       = multiplyPowers x max (total*x)
+
+problem6 :: Int -> Int
+problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
+  where
+    squareOfSum :: (Integral a) => [a] -> a
+    squareOfSum list = (sum list)^2
+    --
+    sumOfSquares :: (Integral a) => [a] -> a
+    sumOfSquares list = sum (fmap (\ x -> x*x) list)
