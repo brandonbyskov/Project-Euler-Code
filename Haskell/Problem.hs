@@ -1,9 +1,9 @@
 module Problem where
 
 import Problem.Support
+import Data.Char
 import Data.List
 import Data.Ord
-import Data.Char
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
@@ -113,3 +113,10 @@ problem16 :: Int -> Int
 problem16 n
   | n < 0     = 0
   | otherwise = sum (fmap digitToInt (show (2^n)))
+
+-- 100
+problem20 :: Int -> Int
+problem20 x = sum (fmap digitToInt (show (factorial x)))
+  where
+    factorial ::  Integral a=> a -> Integer
+    factorial n = foldl1 (*) [1..(toInteger n)]
