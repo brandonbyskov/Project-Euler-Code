@@ -3,6 +3,7 @@ module Problem where
 import Problem.Support
 import Data.List
 import Data.Ord
+import Data.Char
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
@@ -51,7 +52,7 @@ problem5 max = problem5' 2 max
   where
     problem5' :: Int -> Int -> Int
     problem5' x max
-      | x > max = 1
+      | x > max   = 1
       | isPrime x = (multiplyPowers x max x) * problem5' (x+1) max
       | otherwise = problem5' (x+1) max
     --
@@ -106,3 +107,9 @@ problem14 n = fst (maximumBy (comparing snd) [(i, collatz i)::(Int,Int) | i <- [
     collatz n
       | even n    = 1 + collatz (n `div` 2)
       | otherwise = 1 + collatz (3*n + 1)
+
+-- 1000
+problem16 :: Int -> Int
+problem16 n
+  | n < 0     = 0
+  | otherwise = sum (fmap digitToInt (show (2^n)))
