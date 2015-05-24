@@ -6,11 +6,11 @@ isPrime x
   | even x          = False
   | isDivisible 3 x = False
   | otherwise       = not (hasDivisors 5 (floor (sqrt (fromIntegral x))) x)
-    where
-      hasDivisors :: (Integral a) => a -> a -> a -> Bool
-      hasDivisors divisor max x
-        | divisor > max = False
-        | otherwise     = isDivisible divisor x || isDivisible (divisor + 2) x || hasDivisors (divisor+6) max x
+  where
+    hasDivisors :: (Integral a) => a -> a -> a -> Bool
+    hasDivisors divisor max x
+      | divisor > max = False
+      | otherwise     = isDivisible divisor x || isDivisible (divisor + 2) x || hasDivisors (divisor+6) max x
 
 getNextPrime :: (Integral a) => a -> a
 getNextPrime x
@@ -21,6 +21,17 @@ getNextPrime x
 -- True if x is divisible by d
 isDivisible :: (Integral a) => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
+
+numDivisors :: (Integral a) => a -> a
+numDivisors x
+  | x <= 1    = if x == 1 then 1 else 0
+  | otherwise = 2 + addDivisors 2 (floor (sqrt (fromIntegral x))) x
+  where
+    addDivisors :: (Integral a) => a -> a -> a -> a
+    addDivisors d max x
+      | d >= max        = if d*d == x then 1 else 0
+      | isDivisible d x = 2 + addDivisors (d+1) max x
+      | otherwise       = addDivisors (d+1) max x
 
 isPalindrome :: (Integral a, Show a) => a -> Bool
 isPalindrome x 

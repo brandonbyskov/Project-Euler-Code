@@ -81,3 +81,10 @@ problem10 max
   | max < 3   = 0
   | max == 3  = 2
   | otherwise = 2 + sum [x::Int | x <- [3,5..(max-1)], isPrime x]
+
+-- 500
+problem12 :: Int -> Int
+problem12 minDivisors = head [x::Int | x <- triangleNumbers, (numDivisors x) >= minDivisors]
+  where
+    triangleNumbers :: [Int]
+    triangleNumbers = scanl1 (+) [1..]
