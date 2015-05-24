@@ -66,3 +66,11 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
     --
     sumOfSquares :: (Integral a) => [a] -> a
     sumOfSquares list = sum (fmap (\ x -> x*x) list)
+
+-- 10001
+problem7 :: Int -> Int
+problem7 n = problem7' 0 n
+  where
+    problem7' :: Int -> Int -> Int
+    problem7' prime 0 = prime
+    problem7' prime n = problem7' (getNextPrime prime) (n-1)

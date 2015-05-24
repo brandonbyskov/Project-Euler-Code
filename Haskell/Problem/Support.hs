@@ -12,6 +12,12 @@ isPrime x
         | divisor > max = False
         | otherwise     = isDivisible divisor x || isDivisible (divisor + 2) x || hasDivisors (divisor+6) max x
 
+getNextPrime :: (Integral a) => a -> a
+getNextPrime x
+  | x < 2     = 2
+  | even x    = if isPrime (x+1) then x+1 else getNextPrime (x+1)
+  | otherwise = if isPrime (x+2) then x+2 else getNextPrime (x+2)
+
 -- True if x is divisible by d
 isDivisible :: (Integral a) => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
