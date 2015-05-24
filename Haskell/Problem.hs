@@ -1,6 +1,8 @@
 module Problem where
 
 import Problem.Support
+import Data.List
+import Data.Ord
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
@@ -88,3 +90,19 @@ problem12 minDivisors = head [x::Int | x <- triangleNumbers, (numDivisors x) >= 
   where
     triangleNumbers :: [Int]
     triangleNumbers = scanl1 (+) [1..]
+
+
+-- This implementation is faster than:
+-- problem14 n = maximumBy (comparing collatz) [1..(n-1)]
+-- I'd ideally like to implement memoization for the collatz function.
+-- The above code should not be slower if memoization is used.
+-- 
+-- 1000000
+problem14 :: Int -> Int
+problem14 n = fst (maximumBy (comparing snd) [(i, collatz i)::(Int,Int) | i <- [1..(n-1)]])
+  where
+    collatz :: Int -> Int
+    collatz 1 = 1
+    collatz n
+      | even n    = 1 + collatz (n `div` 2)
+      | otherwise = 1 + collatz (3*n + 1)
