@@ -74,3 +74,10 @@ problem7 n = problem7' 0 n
     problem7' :: Int -> Int -> Int
     problem7' prime 0 = prime
     problem7' prime n = problem7' (getNextPrime prime) (n-1)
+
+-- 2000000
+problem10 :: Int -> Int
+problem10 max
+  | max < 3   = 0
+  | max == 3  = 2
+  | otherwise = 2 + sum [x::Int | x <- [3,5..(max-1)], isPrime x]
