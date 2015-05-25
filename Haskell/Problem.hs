@@ -120,3 +120,14 @@ problem20 x = sum (fmap digitToInt (show (factorial x)))
   where
     factorial ::  Integral a=> a -> Integer
     factorial n = foldl1 (*) [1..(toInteger n)]
+
+-- 1000000
+problem40 :: Int -> Int
+problem40 maxN = problem40' 1 maxN champernowne
+  where
+    problem40' :: Int -> Int -> [Int] -> Int
+    problem40' n maxN list
+      | n > maxN  = 1
+      | otherwise = head list * problem40' (n*10) maxN (drop (n*9) list)
+    champernowne :: [Int]
+    champernowne = fmap digitToInt (concat (fmap show [1..]))
