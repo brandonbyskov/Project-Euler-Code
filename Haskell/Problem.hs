@@ -4,6 +4,7 @@ import Problem.Support
 import Data.Char
 import Data.List
 import Data.Ord
+import Numeric (showIntAtBase)
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
@@ -120,6 +121,16 @@ problem20 x = sum (fmap digitToInt (show (factorial x)))
   where
     factorial ::  Integral a=> a -> Integer
     factorial n = foldl1 (*) [1..(toInteger n)]
+
+-- 1000000
+problem36 :: Int -> Int
+problem36 max = sum [x::Int | x <- [1..(max-1)], isDoubleBasePalindrome x]
+  where
+    isDoubleBasePalindrome :: Int -> Bool
+    isDoubleBasePalindrome x = isPalindrome x && isBinaryPalindrome x
+    --
+    isBinaryPalindrome :: Int -> Bool
+    isBinaryPalindrome x = (\ list -> list == reverse list) (showIntAtBase 2 intToDigit x "")
 
 -- 1000000
 problem40 :: Int -> Int
