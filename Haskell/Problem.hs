@@ -142,3 +142,17 @@ problem40 maxN = problem40' 1 maxN champernowne
       | otherwise = head list * problem40' (n*10) maxN (drop (n*9) list)
     champernowne :: [Int]
     champernowne = fmap digitToInt (concat (fmap show [1..]))
+
+-- 1000000
+problem50 :: Int -> Int
+problem50 max = problem50' 2 max primes 2
+  where
+    problem50':: Int -> Int -> [Int] -> Int -> Int
+    problem50' n max primesList highest
+      | sum (take n primesList) >= max = if head primesList == 2 then highest
+                                        else problem50' (n+1) max primes highest
+      | otherwise = if isPrime (sum (take n primesList))
+                      then problem50' (n+1) max primes (sum (take n primesList))
+                    else problem50' n max (tail primesList) highest
+    primes :: [Int]
+    primes = 2:[x::Int | x <- [3,5..], isPrime x]
