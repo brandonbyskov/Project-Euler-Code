@@ -42,10 +42,10 @@ problem4 numDigits = problem4' (10^numDigits - 1) (10^numDigits - 1) (10^(numDig
   where
     problem4' :: Int -> Int -> Int -> Int -> Int
     problem4' x y min highest
-      | y < min = if x == min then highest else problem4' (x-1) (x-1) min highest
+      | y < min            = if x == min then highest else problem4' (x-1) (x-1) min highest
       | x * y <= highest   = if x == y then highest else problem4' (x-1) (x-1) min highest
       | isPalindrome (x*y) = problem4' (x-1) (x-1) min (x*y)
-      | otherwise = problem4' x (y-1) min highest
+      | otherwise          = problem4' x (y-1) min highest
 
 -- 20
 problem5 :: Int -> Int
@@ -73,18 +73,15 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
 
 -- 10001
 problem7 :: Int -> Int
-problem7 n = problem7' 0 n
-  where
-    problem7' :: Int -> Int -> Int
-    problem7' prime 0 = prime
-    problem7' prime n = problem7' (getNextPrime prime) (n-1)
+problem7 n = primes'!!(n-1)
 
 -- 2000000
 problem10 :: Int -> Int
-problem10 max
-  | max < 3   = 0
-  | max == 3  = 2
-  | otherwise = 2 + sum [x::Int | x <- [3,5..(max-1)], isPrime x]
+problem10 max = problem10' max primes'
+  where
+    problem10' max pList
+      | head pList >= max = 0
+      | otherwise         = head pList + problem10' max (tail pList)
 
 -- 500
 problem12 :: Int -> Int
@@ -94,10 +91,7 @@ problem12 minDivisors = head [x::Int | x <- triangleNumbers, (numDivisors x) >= 
     triangleNumbers = scanl1 (+) [1..]
 
 
--- This implementation is faster than:
--- problem14 n = maximumBy (comparing collatz) [1..(n-1)]
 -- I'd ideally like to implement memoization for the collatz function.
--- The above code should not be slower if memoization is used.
 -- 
 -- 1000000
 problem14 :: Int -> Int
@@ -119,7 +113,7 @@ problem16 n
 problem20 :: Int -> Int
 problem20 x = sum (fmap digitToInt (show (factorial x)))
   where
-    factorial ::  Integral a=> a -> Integer
+    factorial ::  (Integral a) => a -> Integer
     factorial n = foldl1 (*) [1..(toInteger n)]
 
 -- 1000000
@@ -145,14 +139,11 @@ problem40 maxN = problem40' 1 maxN champernowne
 
 -- 1000000
 problem50 :: Int -> Int
-problem50 max = problem50' 2 max primes 2
+problem50 max = problem50' 2 max primes' 2
   where
     problem50':: Int -> Int -> [Int] -> Int -> Int
-    problem50' n max primesList highest
-      | sum (take n primesList) >= max = if head primesList == 2 then highest
-                                        else problem50' (n+1) max primes highest
-      | otherwise = if isPrime (sum (take n primesList))
-                      then problem50' (n+1) max primes (sum (take n primesList))
-                    else problem50' n max (tail primesList) highest
-    primes :: [Int]
-    primes = 2:[x::Int | x <- [3,5..], isPrime x]
+    problem50' n max pList highest
+      | sum (take n pList) >= max    = if head pList == 2 then highest
+                                       else problem50' (n+1) max primes' highest
+      | isPrime (sum (take n pList)) = problem50' (n+1) max primes' (sum (take n pList))
+      | otherwise                    = problem50' n max (tail pList) highest

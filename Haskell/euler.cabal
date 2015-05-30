@@ -18,3 +18,4 @@ executable euler
   main-is:             Main.hs
   other-modules:       Problem.Support
   build-depends:       base >=4.6
+  ghc-options:         -O -with-rtsopts=-M512M
