@@ -4,6 +4,7 @@ import Problem.Support
 import Data.Char
 import Data.List
 import Data.Ord
+import Data.Ratio
 import Numeric (showIntAtBase)
 
 -- 3 5 1000
@@ -163,3 +164,17 @@ problem58 max = problem58' max 3 3 0 1 2
     problem58' max x corner numPrimes counted increment
       | isPrime x = problem58' max (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
       | otherwise = problem58' max (x+increment) (corner-1)  numPrimes    (counted+1) increment
+
+-- 100
+problem65 :: Int -> Int
+problem65 maxIter 
+  | maxIter <= 0 = 0
+  | otherwise    = sum (toDigits (numerator (e 1 maxIter)))
+  where
+    e :: Int -> Int -> Rational
+    e 1 maxIter = 2 + e 2 maxIter
+    e iteration maxIter
+      | iteration > maxIter     = 0
+      | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
+      | otherwise               = 1 / (1 + e (iteration+1) maxIter)
+
