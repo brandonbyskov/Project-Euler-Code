@@ -137,6 +137,11 @@ problem40 maxN = problem40' 1 maxN champernowne
     champernowne :: [Int]
     champernowne = fmap digitToInt (concat (fmap show [1..]))
 
+-- 1000
+problem48 :: Int -> Int
+problem48 1 = 1
+problem48 x = fromIntegral (((toInteger x)^x + (toInteger (problem48 (x-1)))) `mod` 10000000000)
+
 -- 1000000
 problem50 :: Int -> Int
 problem50 max = problem50' 2 max primes' 2
