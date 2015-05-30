@@ -147,3 +147,14 @@ problem50 max = problem50' 2 max primes' 2
                                        else problem50' (n+1) max primes' highest
       | isPrime (sum (take n pList)) = problem50' (n+1) max primes' (sum (take n pList))
       | otherwise                    = problem50' n max (tail pList) highest
+
+-- 0.1
+problem58 :: Double -> Int
+problem58 max = problem58' max 3 3 0 1 2
+  where
+    problem58' :: Double -> Int -> Int -> Int -> Int-> Int -> Int
+    problem58' max x 0 numPrimes counted increment = if (realToFrac numPrimes) / (realToFrac (counted+1)) < max then increment + 1
+                                                     else problem58' max (x+increment+2) 3 numPrimes (counted+1) (increment+2)
+    problem58' max x corner numPrimes counted increment
+      | isPrime x = problem58' max (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
+      | otherwise = problem58' max (x+increment) (corner-1)  numPrimes    (counted+1) increment
