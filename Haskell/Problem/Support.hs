@@ -1,5 +1,7 @@
 module Problem.Support where
 
+import Data.Char (digitToInt)
+
 --Prime functions
 
 primes :: [Int]
@@ -59,3 +61,6 @@ isPalindrome :: (Integral a, Show a) => a -> Bool
 isPalindrome x 
   | x < 0 = False
   | otherwise = (show x) == reverse (show x)
+
+toDigits :: (Integral a) => a => [Int]
+toDigits x = fmap digitToInt (show (toInteger x))
