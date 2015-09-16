@@ -178,3 +178,18 @@ problem65 maxIter
       | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
       | otherwise               = 1 / (1 + e (iteration+1) maxIter)
 
+problem518 :: Int -> Int
+problem518 n = problem518' n (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head primes'))) primes' (tail primes') 0
+  where
+    problem518' :: Int -> Int -> Int -> [Int] -> [Int] -> Int -> Int
+    problem518' n limit n1 pList1 pList2 sum = do
+        let n2 = (1+(head pList2))
+        let diff' = n2*n2
+        let c = diff' `div` n1 -1
+        if ( c < n) 
+          then if ( diff' `mod` n1 == 0) && (not ( hasPrimeDivisors c (floor (sqrt (fromIntegral c))) primes'))
+                 then
+                   problem518' n limit n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
+                 else problem518' n limit n1 pList1 (tail pList2) sum
+          else if (head ( pList1)) >= limit then sum else problem518' n limit ( (1+(head (tail pList1)))) (tail pList1) (tail (tail pList1)) sum
+

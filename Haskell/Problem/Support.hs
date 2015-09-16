@@ -9,18 +9,20 @@ primes = 2:[x::Int | x <- tail divisorList, isPrime x]
 
 -- This prime number generator is much faster, but is memory expensive.
 primes' :: [Int]
-primes' = 2:[x::Int | x <- tail divisorList, not (hasPrimeDivisors x (floor (sqrt (fromIntegral (x)))) primes')]
-  where
-    hasPrimeDivisors :: Int -> Int -> [Int] -> Bool
-    hasPrimeDivisors x max pList
-      | head pList > max = False
-      | otherwise = (isDivisible (head pList) x) || (hasPrimeDivisors x max (tail pList))
+primes' = do
+  let pList =  drop 3 primes'
+  2:3:5:7:[x::Int | x <- drop 4 divisorList, not (hasPrimeDivisors x (floor (sqrt (fromIntegral x))) pList)]
+
+hasPrimeDivisors :: Int -> Int -> [Int] -> Bool
+hasPrimeDivisors x max pList
+  | head pList > max = False
+  | otherwise = (isDivisible (head pList) x) || (hasPrimeDivisors x max (tail pList))
 
 divisorList :: [Int]
 divisorList = 2:3:5:(tail (concatMap (\x -> fmap (x+) primesShortList) [0,30..]))
   where
     primesShortList ::[Int]
-    primesShortList = [1,7,11,13,17,19,23,29]
+    primesShortList = [1,7,11,13,17,19,23,29] 
 
 isPrime :: (Integral a) => a -> Bool
 isPrime x
