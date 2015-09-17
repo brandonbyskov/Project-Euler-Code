@@ -178,6 +178,23 @@ problem65 maxIter
       | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
       | otherwise               = 1 / (1 + e (iteration+1) maxIter)
 
+-- 500500
+problem500 :: Int -> Int
+problem500 divisors = problem500' divisors (powersOfPrimes 0) 1
+  where
+    problem500' :: Int -> [Int] -> Integer -> Int
+    problem500' 0 _ sum = fromIntegral sum
+    problem500' divisors powersList sum = problem500' (divisors - 1) (tail powersList) ((sum * toInteger (head powersList)) `mod` 500500507)
+    --
+    powersOfPrimes :: Int -> [Int]
+    powersOfPrimes 0 = powersOfPrimes' primes' (powersOfPrimes 1)
+    powersOfPrimes n = (2^2^n):powersOfPrimes' [ x^2^n | x <- tail primes'] (powersOfPrimes (n+1))
+    --
+    powersOfPrimes' :: [Int] -> [Int] -> [Int]
+    powersOfPrimes' thisList nextList
+      | head thisList <= head nextList = (head thisList):(powersOfPrimes' (tail thisList) nextList)
+      | otherwise                      = (head nextList):(powersOfPrimes' thisList (tail nextList))
+
 problem518 :: Int -> Int
 problem518 n = problem518' n (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head primes'))) primes' (tail primes') 0
   where
