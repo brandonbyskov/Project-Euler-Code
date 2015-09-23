@@ -76,6 +76,16 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
 problem7 :: Int -> Int
 problem7 n = primes'!!(n-1)
 
+problem9 :: Int -> Int
+problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
+  where
+    problem9' :: Int -> Int -> Int -> Int
+    problem9' a b c
+      | b == 1          = 0
+      | a^2 + b^2 > c^2 = problem9' a (b-1) (c+1)
+      | a^2 + b^2 < c^2 = problem9' (a+1) b (c-1)
+      | otherwise       = a*b*c
+
 -- 2000000
 problem10 :: Int -> Int
 problem10 max = problem10' max primes'
@@ -193,25 +203,27 @@ problem401 n = problem401' ( n) 1 0 0
     problem401' n value lastSS sum
       | n < value =  sum
       | otherwise = do
-        let newP = n `div` value
-        let newQ = n `div` newP
-        let newQ' = newQ
-        let sumSquares' = sumNSquares newQ
+        let count = n `div` value -- the number of Ints < n that have the same divisors
+        let divisor = n `div` count -- the highest divisor that shares the same frequency in the range
+        --get the sum of all divisors^2 that share the same frequency of occurence
+        let sumSquares' = squarePyramidal divisor
         let sumSquares = if sumSquares'-lastSS < 0 then sumSquares'-lastSS+1000000000 else sumSquares'-lastSS
-        problem401' n (newQ+1) sumSquares' (trim (sum+(trim newP)*sumSquares))
-    sumNSquares :: Int -> Int
-    sumNSquares n = sumNSquares' n (n`mod`6)
-    sumNSquares' :: Int -> Int -> Int
-    sumNSquares' n 0 = squarePyramidal (n`div`6)  (n+1)         (2*n+1)
-    sumNSquares' n 5 = squarePyramidal  n        ((n+1)`div`6)  (2*n+1)
-    sumNSquares' n 4 = squarePyramidal (n`div`2)  (n+1)        ((2*n+1)`div`3)
-    sumNSquares' n 3 = squarePyramidal (n`div`3) ((n+1)`div`2)  (2*n+1)
-    sumNSquares' n 2 = squarePyramidal (n`div`2) ((n+1)`div`3)  (2*n+1)
-    sumNSquares' n 1 = squarePyramidal  n        ((n+1)`div`2) ((2*n+1)`div`3)
+        problem401' n (divisor+1) sumSquares' (trim (sum+(trim count)*sumSquares))
+    -- the following squarePyramidal functions calculate the sum of all the squares from 1^2..n^2
+    squarePyramidal :: Int -> Int
+    squarePyramidal n = squarePyramidal' n (n`mod`6)
+    squarePyramidal' :: Int -> Int -> Int
+    squarePyramidal' n 0 = squarePyramidal'' (n`div`6)  (n+1)         (2*n+1)
+    squarePyramidal' n 5 = squarePyramidal''  n        ((n+1)`div`6)  (2*n+1)
+    squarePyramidal' n 4 = squarePyramidal'' (n`div`2)  (n+1)        ((2*n+1)`div`3)
+    squarePyramidal' n 3 = squarePyramidal'' (n`div`3) ((n+1)`div`2)  (2*n+1)
+    squarePyramidal' n 2 = squarePyramidal'' (n`div`2) ((n+1)`div`3)  (2*n+1)
+    squarePyramidal' n 1 = squarePyramidal''  n        ((n+1)`div`2) ((2*n+1)`div`3)
+    squarePyramidal'' :: Int -> Int -> Int -> Int
+    squarePyramidal'' a b c = trim (trim ((trim a)*(trim b))*(trim c))
+    --
     trim :: Int -> Int
     trim n = if n >= 1000000000 then n`mod`1000000000 else n
-    squarePyramidal :: Int -> Int -> Int -> Int
-    squarePyramidal a b c = trim (trim ((trim a)*(trim b))*(trim c))
 
 -- 500500
 problem500 :: Int -> Int
