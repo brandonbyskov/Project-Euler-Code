@@ -178,6 +178,41 @@ problem65 maxIter
       | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
       | otherwise               = 1 / (1 + e (iteration+1) maxIter)
 
+--
+--problem352 :: Int -> Double
+--problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])
+--  where
+--    minTests sample p =
+    --find num tests at various sample splits, get local minimum, then solve with smaller samples recursively
+
+-- 1000000000000000
+problem401 :: Int -> Int
+problem401 n = problem401' ( n) 1 0 0
+  where
+    problem401' :: Int -> Int -> Int -> Int -> Int
+    problem401' n value lastSS sum
+      | n < value =  sum
+      | otherwise = do
+        let newP = n `div` value
+        let newQ = n `div` newP
+        let newQ' = newQ
+        let sumSquares' = sumNSquares newQ
+        let sumSquares = if sumSquares'-lastSS < 0 then sumSquares'-lastSS+1000000000 else sumSquares'-lastSS
+        problem401' n (newQ+1) sumSquares' (trim (sum+(trim newP)*sumSquares))
+    sumNSquares :: Int -> Int
+    sumNSquares n = sumNSquares' n (n`mod`6)
+    sumNSquares' :: Int -> Int -> Int
+    sumNSquares' n 0 = squarePyramidal (n`div`6)  (n+1)         (2*n+1)
+    sumNSquares' n 5 = squarePyramidal  n        ((n+1)`div`6)  (2*n+1)
+    sumNSquares' n 4 = squarePyramidal (n`div`2)  (n+1)        ((2*n+1)`div`3)
+    sumNSquares' n 3 = squarePyramidal (n`div`3) ((n+1)`div`2)  (2*n+1)
+    sumNSquares' n 2 = squarePyramidal (n`div`2) ((n+1)`div`3)  (2*n+1)
+    sumNSquares' n 1 = squarePyramidal  n        ((n+1)`div`2) ((2*n+1)`div`3)
+    trim :: Int -> Int
+    trim n = if n >= 1000000000 then n`mod`1000000000 else n
+    squarePyramidal :: Int -> Int -> Int -> Int
+    squarePyramidal a b c = trim (trim ((trim a)*(trim b))*(trim c))
+
 -- 500500
 problem500 :: Int -> Int
 problem500 divisors = problem500' divisors (powersOfPrimes 0) 1
