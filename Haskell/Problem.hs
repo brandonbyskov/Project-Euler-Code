@@ -133,6 +133,25 @@ problem16 n
   | n < 0     = 0
   | otherwise = sum (toDigits (2^n))
 
+-- 1000
+problem17 :: Int -> Int
+problem17  0 = 0
+problem17 n = letterCount n + problem17 (n-1)
+  where
+    letterCount n
+      | n == 1000 = 11
+      | n >= 100  = letterCount (n`div`100) + if n`mod`100 == 0 then 7 else (10 + letterCount (n`mod`100))
+      | n >= 20   = tensPrefix!!(n`div`10 - 2) + letterCount (n`mod`10)
+      | n >= 10   = teensCount!!(n-10)
+      | n >= 1    = singleDigitCount!!(n-1)
+      | n == 0    = 0
+    tensPrefix :: [Int]
+    tensPrefix = [6,6,5,5,5,7,6,6] --starting with twenty
+    teensCount :: [Int]
+    teensCount = [3,6,6,8,8,7,7,9,8,8] --starting with ten
+    singleDigitCount :: [Int]
+    singleDigitCount = [3,3,5,4,4,3,5,5,4] --starting with one
+
 -- 100
 problem20 :: Int -> Int
 problem20 x = sum (toDigits (factorial x))
