@@ -76,6 +76,7 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
 problem7 :: Int -> Int
 problem7 n = primes'!!(n-1)
 
+-- 1000
 problem9 :: Int -> Int
 problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
   where
@@ -113,6 +114,18 @@ problem14 n = fst (maximumBy (comparing snd) [(i, collatz i)::(Int,Int) | i <- [
     collatz n
       | even n    = 1 + collatz (n `div` 2)
       | otherwise = 1 + collatz (3*n + 1)
+
+-- 20
+problem15 :: Int -> Int
+problem15 gridSize = problem15' gridSize [2]
+  where
+    problem15' :: Int -> [Int] -> Int
+    problem15' 1 list = last list
+    problem15' n list = problem15' (n-1) (buildList list 1)
+    --
+    buildList :: [Int] -> Int -> [Int]
+    buildList []   x = [2*x]
+    buildList list x = (x+head list):(buildList (tail list) (x+head list))
 
 -- 1000
 problem16 :: Int -> Int
