@@ -159,6 +159,13 @@ problem20 x = sum (toDigits (factorial x))
     factorial ::  (Integral a) => a -> Integer
     factorial n = foldl1 (*) [1..(toInteger n)]
 
+-- 10000
+problem21 :: Int -> Int
+problem21 n = sum [x | x <- [2..n], x == sum (properDivisors (sum (properDivisors x))) && x /= sum (properDivisors x)]
+  where
+    properDivisors :: Int -> [Int]
+    properDivisors x = init (divisors x)
+
 -- 1000000
 problem36 :: Int -> Int
 problem36 max = sum [x::Int | x <- [1..(max-1)], isDoubleBasePalindrome x]

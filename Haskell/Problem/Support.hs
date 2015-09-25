@@ -44,6 +44,18 @@ getNextPrime x
 
 --End Prime functions
 
+divisors :: Int -> [Int]
+divisors x = generateDivisors 1 []
+  where
+    root = floor (sqrt (fromIntegral x))
+    generateDivisors :: Int -> [Int] -> [Int]
+    generateDivisors d upperList
+      | d == root       = if isDivisible d x
+                            then (if d*d == x then d:upperList else d:(x`div`d):upperList)
+                            else upperList
+      | isDivisible d x = d:(generateDivisors (d+1) ((x`div`d):upperList))
+      | otherwise       = generateDivisors (d+1) upperList
+
 -- True if x is divisible by d
 isDivisible :: (Integral a) => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
