@@ -3,6 +3,7 @@ module Problem where
 import Problem.Support
 import Data.Char
 import Data.List
+import Data.Maybe
 import Data.Ord
 import Data.Ratio
 import Numeric (showIntAtBase)
@@ -226,6 +227,16 @@ problem65 maxIter
       | iteration > maxIter     = 0
       | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
       | otherwise               = 1 / (1 + e (iteration+1) maxIter)
+
+problem104 :: Int
+problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
+  where
+    fib :: [Integer]
+    fib = 1:1:(zipWith (+) fib (tail fib))
+    pandigitalTest :: Integral a => a -> Bool
+    pandigitalTest x = isPandigital (x `mod` 1000000000) && isPandigitalSignificantDigits x
+    isPandigitalSignificantDigits :: Integral a => a -> Bool
+    isPandigitalSignificantDigits x = [1..9] == (intersect [1..9] (take 9 (toDigits x)))
 
 --
 --problem352 :: Int -> Double

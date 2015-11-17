@@ -1,6 +1,7 @@
 module Problem.Support where
 
 import Data.Char (digitToInt)
+import Data.List
 
 --Prime functions
 
@@ -75,6 +76,9 @@ isPalindrome :: (Integral a, Show a) => a -> Bool
 isPalindrome x 
   | x < 0 = False
   | otherwise = (show x) == reverse (show x)
+
+isPandigital :: Integral a => a -> Bool
+isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
 
 toDigits :: (Integral a) => a => [Int]
 toDigits x = fmap digitToInt (show (toInteger x))
