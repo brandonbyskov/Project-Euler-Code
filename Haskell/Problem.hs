@@ -10,54 +10,52 @@ import Numeric (showIntAtBase)
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
-problem1 x y max = problem1' x y 0 0 max
-  where
-    problem1' xi yi x y max
-      | (x >= max && y >= max) = 0
-      | x == y                 = problem1' xi yi (x + xi) y max
-      | x < y                  = x  + problem1' xi yi (x + xi) y max
-      | otherwise              = y  + problem1' xi yi x (y + yi) max
+problem1 a b max = let f x = (x*) . g $ (max-1) `div` x
+                       g n = n*(n+1) `div` 2 -- equivalent to sum [1..n]
+                   in f a + f b - f (a*b)
 
 -- 4000000
 problem2 :: Int -> Int
-problem2 max = problem2' 1 2 max
+problem2 max = sum (takeWhile (< max) evenFibs)
   where
-    problem2' x y max
-      | y > max   = 0
-      | otherwise = y + problem2' (x + 2*y) (2*x + 3*y) max
+    evenFibs :: [Int]  
+    evenFibs = 2:8:(zipWith (\a b ->a+4*b) evenFibs (tail evenFibs))
 
 -- 600851475143
 problem3 :: Int -> Int
-problem3 x = problem3' x 2 (floor (sqrt (fromIntegral x))) 0
+problem3 x = problem3' 2 0
   where
-    problem3' :: Int -> Int -> Int -> Int -> Int
-    problem3' x divisor max highest
-      | divisor > max         = highest
+    problem3' :: Int -> Int -> Int
+    problem3' divisor highest
+      | divisor > root        = highest
       | isDivisible divisor x = if isPrime (x `div` divisor) then (x `div` divisor)
-                                else if isPrime divisor then problem3' x (divisor+1) max divisor
-                                     else problem3' x (divisor+1) max highest
-      | otherwise             = problem3' x (divisor+1) max highest
+                                else if isPrime divisor then problem3' (divisor+1) divisor
+                                     else problem3' (divisor+1) highest
+      | otherwise             = problem3' (divisor+1) highest
+    problem3'' = 0
+    root = floor . sqrt . fromIntegral $ x
 
 -- 3
 problem4 :: Int -> Int
-problem4 numDigits = problem4' (10^numDigits - 1) (10^numDigits - 1) (10^(numDigits - 1)) 0
+problem4 numDigits = problem4' (10^numDigits - 1) (10^numDigits - 1) 0
   where
-    problem4' :: Int -> Int -> Int -> Int -> Int
-    problem4' x y min highest
-      | y < min            = if x == min then highest else problem4' (x-1) (x-1) min highest
-      | x * y <= highest   = if x == y then highest else problem4' (x-1) (x-1) min highest
-      | isPalindrome (x*y) = problem4' (x-1) (x-1) min (x*y)
-      | otherwise          = problem4' x (y-1) min highest
+    problem4' :: Int -> Int -> Int -> Int
+    problem4' x y highest
+      | y < min            = if x == min then highest else problem4' (x-1) (x-1) highest
+      | x * y <= highest   = if x == y   then highest else problem4' (x-1) (x-1) highest
+      | isPalindrome (x*y) = problem4' (x-1) (x-1) (x*y)
+      | otherwise          = problem4'  x    (y-1) highest
+    min = (10^(numDigits - 1))
 
 -- 20
 problem5 :: Int -> Int
-problem5 max = problem5' 2 max
+problem5 max = problem5' 2
   where
-    problem5' :: Int -> Int -> Int
-    problem5' x max
+    problem5' :: Int -> Int
+    problem5' x
       | x > max   = 1
-      | isPrime x = (multiplyPowers x max x) * problem5' (x+1) max
-      | otherwise = problem5' (x+1) max
+      | isPrime x = (multiplyPowers x max x) * problem5' (x+1)
+      | otherwise = problem5' (x+1)
     --
     multiplyPowers :: Int -> Int -> Int -> Int
     multiplyPowers x max total
@@ -90,15 +88,11 @@ problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
 
 -- 2000000
 problem10 :: Int -> Int
-problem10 max = problem10' max primes'
-  where
-    problem10' max pList
-      | head pList >= max = 0
-      | otherwise         = head pList + problem10' max (tail pList)
+problem10 max = sum (takeWhile (< max) primes')
 
 -- 500
 problem12 :: Int -> Int
-problem12 minDivisors = head [x::Int | x <- triangleNumbers, (numDivisors x) >= minDivisors]
+problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ triangleNumbers
   where
     triangleNumbers :: [Int]
     triangleNumbers = scanl1 (+) [1..]
@@ -201,19 +195,19 @@ problem50 max = problem50' 2 max primes' 2
     problem50' n max pList highest
       | sum (take n pList) >= max    = if head pList == 2 then highest
                                        else problem50' (n+1) max primes' highest
-      | isPrime (sum (take n pList)) = problem50' (n+1) max primes' (sum (take n pList))
-      | otherwise                    = problem50' n max (tail pList) highest
+      | isPrime (sum (take n pList)) = problem50' (n+1) max primes'      (sum (take n pList))
+      | otherwise                    = problem50'  n    max (tail pList) highest
 
 -- 0.1
 problem58 :: Double -> Int
-problem58 max = problem58' max 3 3 0 1 2
+problem58 max = problem58' 3 3 0 1 2
   where
-    problem58' :: Double -> Int -> Int -> Int -> Int-> Int -> Int
-    problem58' max x 0 numPrimes counted increment = if (realToFrac numPrimes) / (realToFrac (counted+1)) < max then increment + 1
-                                                     else problem58' max (x+increment+2) 3 numPrimes (counted+1) (increment+2)
-    problem58' max x corner numPrimes counted increment
-      | isPrime x = problem58' max (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
-      | otherwise = problem58' max (x+increment) (corner-1)  numPrimes    (counted+1) increment
+    problem58' :: Int -> Int -> Int -> Int-> Int -> Int
+    problem58' x 0 numPrimes counted increment = if (realToFrac numPrimes) / (realToFrac (counted+1)) < max then increment + 1
+                                                     else problem58' (x+increment+2) 3 numPrimes (counted+1) (increment+2)
+    problem58' x corner numPrimes counted increment
+      | isPrime x = problem58' (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
+      | otherwise = problem58' (x+increment) (corner-1)  numPrimes    (counted+1) increment
 
 -- 100
 problem65 :: Int -> Int
@@ -292,18 +286,20 @@ problem500 divisors = problem500' divisors (powersOfPrimes 0) 1
       | head thisList <= head nextList = (head thisList):(powersOfPrimes' (tail thisList) nextList)
       | otherwise                      = (head nextList):(powersOfPrimes' thisList (tail nextList))
 
+-- Correct but too slow. Needs a better prime number algorithm, 
+-- or take advantage of geometric series.
 problem518 :: Int -> Int
-problem518 n = problem518' n (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head primes'))) primes' (tail primes') 0
+problem518 n = problem518' (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head primes'))) primes' (tail primes') 0
   where
-    problem518' :: Int -> Int -> Int -> [Int] -> [Int] -> Int -> Int
-    problem518' n limit n1 pList1 pList2 sum = do
+    problem518' :: Int -> Int -> [Int] -> [Int] -> Int -> Int
+    problem518' limit n1 pList1 pList2 sum = do
         let n2 = (1+(head pList2))
         let diff' = n2*n2
         let c = diff' `div` n1 -1
         if ( c < n) 
           then if ( diff' `mod` n1 == 0) && (not ( hasPrimeDivisors c (floor (sqrt (fromIntegral c))) primes'))
                  then
-                   problem518' n limit n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
-                 else problem518' n limit n1 pList1 (tail pList2) sum
-          else if (head ( pList1)) >= limit then sum else problem518' n limit ( (1+(head (tail pList1)))) (tail pList1) (tail (tail pList1)) sum
+                   problem518' limit n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
+                 else problem518' limit n1 pList1 (tail pList2) sum
+          else if (head ( pList1)) >= limit then sum else problem518' limit ( (1+(head (tail pList1)))) (tail pList1) (tail (tail pList1)) sum
 
