@@ -1,6 +1,8 @@
 module Problem where
 
+import Problem.FileIO
 import Problem.Support
+
 import Data.Char
 import Data.List
 import Data.Maybe
@@ -147,6 +149,14 @@ problem17 n = letterCount n + problem17 (n-1)
     singleDigitCount :: [Int]
     singleDigitCount = [3,3,5,4,4,3,5,5,4] --starting with one
 
+-- "data/p018.txt"
+problem18 :: String -> IO Int
+problem18 dataFile = readGrid dataFile >>= return . head . foldr1 solveRow
+  where
+    solveRow :: [Int] -> [Int] -> [Int]
+    solveRow []     _          = []
+    solveRow (a:as) (b1:b2:bs) = (a + max b1 b2):(solveRow as (b2:bs))
+
 -- 100
 problem20 :: Int -> Int
 problem20 x = sum (toDigits (factorial x))
@@ -221,6 +231,10 @@ problem65 maxIter
       | iteration > maxIter     = 0
       | isDivisible 3 iteration = 1 / ((realToFrac (2*iteration `div` 3)) + e (iteration+1) maxIter)
       | otherwise               = 1 / (1 + e (iteration+1) maxIter)
+
+-- "data/p067.txt"
+problem67 :: String -> IO Int
+problem67 = problem18
 
 problem104 :: Int
 problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
@@ -302,4 +316,3 @@ problem518 n = problem518' (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head prim
                    problem518' limit n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
                  else problem518' limit n1 pList1 (tail pList2) sum
           else if (head ( pList1)) >= limit then sum else problem518' limit ( (1+(head (tail pList1)))) (tail pList1) (tail (tail pList1)) sum
-
