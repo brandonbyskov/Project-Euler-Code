@@ -12,13 +12,13 @@ import Numeric (showIntAtBase)
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
-problem1 a b max = let f x = (x*) . g $ (max-1) `div` x
+problem1 a b max = let f x = x * (g $ (max-1) `div` x) -- multiples of x less than max
                        g n = n*(n+1) `div` 2 -- equivalent to sum [1..n]
                    in f a + f b - f (a*b)
 
 -- 4000000
 problem2 :: Int -> Int
-problem2 max = sum (takeWhile (< max) evenFibs)
+problem2 max = sum $ takeWhile (< max) evenFibs
   where
     evenFibs :: [Int]  
     evenFibs = 2:8:(zipWith (\a b ->a+4*b) evenFibs (tail evenFibs))
@@ -54,15 +54,10 @@ problem5 :: Int -> Int
 problem5 max = problem5' 2
   where
     problem5' :: Int -> Int
-    problem5' x
-      | x > max   = 1
-      | isPrime x = (multiplyPowers x max x) * problem5' (x+1)
-      | otherwise = problem5' (x+1)
+    problem5' x = product . fmap largestMultiple . filter isPrime $ [2..max]
     --
-    multiplyPowers :: Int -> Int -> Int -> Int
-    multiplyPowers x max total
-      | total * x > max = total
-      | otherwise       = multiplyPowers x max (total*x)
+    largestMultiple :: Int -> Int
+    largestMultiple x = last . takeWhile (< max) $ iterate (*x) x
 
 problem6 :: Int -> Int
 problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
@@ -71,7 +66,7 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
     squareOfSum list = (sum list)^2
     --
     sumOfSquares :: (Integral a) => [a] -> a
-    sumOfSquares list = sum (fmap (\ x -> x*x) list)
+    sumOfSquares list = sum . fmap (\ x -> x*x) $ list
 
 -- 10001
 problem7 :: Int -> Int
@@ -90,13 +85,12 @@ problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
 
 -- 2000000
 problem10 :: Int -> Int
-problem10 max = sum (takeWhile (< max) primes')
+problem10 max = sum $ takeWhile (< max) primes'
 
 -- 500
 problem12 :: Int -> Int
 problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ triangleNumbers
   where
-    triangleNumbers :: [Int]
     triangleNumbers = scanl1 (+) [1..]
 
 
@@ -104,7 +98,7 @@ problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ tri
 -- 
 -- 1000000
 problem14 :: Int -> Int
-problem14 n = fst (maximumBy (comparing snd) [(i, collatz i)::(Int,Int) | i <- [1..(n-1)]])
+problem14 n = fst . maximumBy (comparing snd) . fmap (\i -> (i, collatz i)) $ [1..n-1]
   where
     collatz :: Int -> Int
     collatz 1 = 1
@@ -117,12 +111,12 @@ problem15 :: Int -> Int
 problem15 gridSize = problem15' gridSize [2]
   where
     problem15' :: Int -> [Int] -> Int
-    problem15' 1 list = last list
-    problem15' n list = problem15' (n-1) (buildList list 1)
+    problem15' 1 xs = last xs
+    problem15' n xs = problem15' (n-1) (buildList xs 1)
     --
     buildList :: [Int] -> Int -> [Int]
-    buildList []   x = [2*x]
-    buildList list x = (x+head list):(buildList (tail list) (x+head list))
+    buildList []     a = [2*a]
+    buildList (x:xs) a = (a + x):(buildList xs (a + x))
 
 -- 1000
 problem16 :: Int -> Int
@@ -132,8 +126,8 @@ problem16 n
 
 -- 1000
 problem17 :: Int -> Int
-problem17  0 = 0
-problem17 n = letterCount n + problem17 (n-1)
+problem17 0 = 0
+problem17 n = sum . fmap letterCount $ [1..n]
   where
     letterCount n
       | n == 1000 = 11
@@ -142,11 +136,9 @@ problem17 n = letterCount n + problem17 (n-1)
       | n >= 10   = teensCount!!(n-10)
       | n >= 1    = singleDigitCount!!(n-1)
       | n == 0    = 0
-    tensPrefix :: [Int]
+    --number of characters in written number
     tensPrefix = [6,6,5,5,5,7,6,6] --starting with twenty
-    teensCount :: [Int]
     teensCount = [3,6,6,8,8,7,7,9,8,8] --starting with ten
-    singleDigitCount :: [Int]
     singleDigitCount = [3,3,5,4,4,3,5,5,4] --starting with one
 
 -- "data/p018.txt"
@@ -159,21 +151,23 @@ problem18 dataFile = readGrid dataFile >>= return . head . foldr1 solveRow
 
 -- 100
 problem20 :: Int -> Int
-problem20 x = sum (toDigits (factorial x))
+problem20 x = sum .toDigits . factorial $ x
   where
     factorial ::  (Integral a) => a -> Integer
     factorial n = foldl1 (*) [1..(toInteger n)]
 
 -- 10000
 problem21 :: Int -> Int
-problem21 n = sum [x | x <- [2..n], x == sum (properDivisors (sum (properDivisors x))) && x /= sum (properDivisors x)]
+problem21 n = sum . filter predicate $ [2..n]
   where
+    predicate :: Int -> Bool
+    predicate x = x == (sum . properDivisors . sum . properDivisors $ x) && x /= sum (properDivisors x)
     properDivisors :: Int -> [Int]
     properDivisors x = init (divisors x)
 
 -- 1000000
 problem36 :: Int -> Int
-problem36 max = sum [x::Int | x <- [1..(max-1)], isDoubleBasePalindrome x]
+problem36 max = sum . filter isDoubleBasePalindrome $ [1..max-1]
   where
     isDoubleBasePalindrome :: Int -> Bool
     isDoubleBasePalindrome x = isPalindrome x && isBinaryPalindrome x
@@ -199,22 +193,21 @@ problem48 x = fromIntegral (((toInteger x)^x + (toInteger (problem48 (x-1)))) `m
 
 -- 1000000
 problem50 :: Int -> Int
-problem50 max = problem50' 2 max primes' 2
+problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes' -- length of longest possible chain
+                in head . concat . fmap (filter isPrime . takeWhile (< max) . primeSums) $ [a, a-1 .. 1]
   where
-    problem50':: Int -> Int -> [Int] -> Int -> Int
-    problem50' n max pList highest
-      | sum (take n pList) >= max    = if head pList == 2 then highest
-                                       else problem50' (n+1) max primes' highest
-      | isPrime (sum (take n pList)) = problem50' (n+1) max primes'      (sum (take n pList))
-      | otherwise                    = problem50'  n    max (tail pList) highest
+    -- sums of n consecutive primes
+    primeSums :: Int -> [Int]
+    primeSums n = fmap (sum . take n) $ tails primes'
 
 -- 0.1
 problem58 :: Double -> Int
 problem58 max = problem58' 3 3 0 1 2
   where
     problem58' :: Int -> Int -> Int -> Int-> Int -> Int
-    problem58' x 0 numPrimes counted increment = if (realToFrac numPrimes) / (realToFrac (counted+1)) < max then increment + 1
-                                                     else problem58' (x+increment+2) 3 numPrimes (counted+1) (increment+2)
+    problem58' x 0 numPrimes counted increment = if (realToFrac numPrimes) / (realToFrac (counted+1)) < max
+                                                   then increment + 1
+                                                   else problem58' (x+increment+2) 3 numPrimes (counted+1) (increment+2)
     problem58' x corner numPrimes counted increment
       | isPrime x = problem58' (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
       | otherwise = problem58' (x+increment) (corner-1)  numPrimes    (counted+1) increment
@@ -267,7 +260,9 @@ problem401 n = problem401' ( n) 1 0 0
         let sumSquares' = squarePyramidal divisor
         let sumSquares = if sumSquares'-lastSS < 0 then sumSquares'-lastSS+1000000000 else sumSquares'-lastSS
         problem401' n (divisor+1) sumSquares' (trim (sum+(trim count)*sumSquares))
-    -- the following squarePyramidal functions calculate the sum of all the squares from 1^2..n^2
+    -- the following squarePyramidal functions calculate the sum of all the squares from 1^2..n^2.
+    -- The complicated pattern matching and modulus trimming are to keep all numbers within the
+    -- bounds of the Int type.
     squarePyramidal :: Int -> Int
     squarePyramidal n = squarePyramidal' n (n`mod`6)
     squarePyramidal' :: Int -> Int -> Int
@@ -285,34 +280,36 @@ problem401 n = problem401' ( n) 1 0 0
 
 -- 500500
 problem500 :: Int -> Int
-problem500 divisors = problem500' divisors (powersOfPrimes 0) 1
+problem500 divisors = let mult = \x y-> x * y `mod` 500500507
+                      in foldl' mult 1 . take divisors $ powersOfPrimes 0
   where
-    problem500' :: Int -> [Int] -> Integer -> Int
-    problem500' 0 _ sum = fromIntegral sum
-    problem500' divisors powersList sum = problem500' (divisors - 1) (tail powersList) ((sum * toInteger (head powersList)) `mod` 500500507)
-    --
+    -- These functions create a sorted infinite list of primes and their powers
     powersOfPrimes :: Int -> [Int]
-    powersOfPrimes 0 = powersOfPrimes' primes' (powersOfPrimes 1)
-    powersOfPrimes n = (2^2^n):powersOfPrimes' [ x^2^n | x <- tail primes'] (powersOfPrimes (n+1))
+    powersOfPrimes 0 = zipSort primes' (powersOfPrimes 1)
+    powersOfPrimes n = (2^2^n):zipSort (fmap (^2^n) $ tail primes') (powersOfPrimes (n+1))
     --
-    powersOfPrimes' :: [Int] -> [Int] -> [Int]
-    powersOfPrimes' thisList nextList
-      | head thisList <= head nextList = (head thisList):(powersOfPrimes' (tail thisList) nextList)
-      | otherwise                      = (head nextList):(powersOfPrimes' thisList (tail nextList))
+    zipSort :: [Int] -> [Int] -> [Int]
+    zipSort (x:xs) (y:ys)
+      | x <= y    = x:zipSort  xs   (y:ys)
+      | otherwise = y:zipSort (x:xs) ys
 
 -- Correct but too slow. Needs a better prime number algorithm, 
 -- or take advantage of geometric series.
 problem518 :: Int -> Int
-problem518 n = problem518' (n-2*(floor (sqrt (fromIntegral n)))) ( (1+(head primes'))) primes' (tail primes') 0
+problem518 n = problem518' (1+head primes') primes' (tail primes') 0
   where
-    problem518' :: Int -> Int -> [Int] -> [Int] -> Int -> Int
-    problem518' limit n1 pList1 pList2 sum = do
-        let n2 = (1+(head pList2))
+    problem518' :: Int -> [Int] -> [Int] -> Int -> Int
+    problem518' n1 pList1 pList2 sum = do
+        let n2 = (1 + head pList2)
         let diff' = n2*n2
-        let c = diff' `div` n1 -1
-        if ( c < n) 
-          then if ( diff' `mod` n1 == 0) && (not ( hasPrimeDivisors c (floor (sqrt (fromIntegral c))) primes'))
+        let c = diff' `div` n1 - 1
+        if ( c < n ) 
+          then if (diff' `mod` n1 == 0) && not (hasPrimeDivisors c (root c) primes')
                  then
-                   problem518' limit n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
-                 else problem518' limit n1 pList1 (tail pList2) sum
-          else if (head ( pList1)) >= limit then sum else problem518' limit ( (1+(head (tail pList1)))) (tail pList1) (tail (tail pList1)) sum
+                   problem518' n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
+                 else problem518' n1 pList1 (tail pList2) sum
+          else if head pList1 >= limit
+                 then sum
+                 else problem518' (1+head (tail pList1)) (tail pList1) (drop 2 pList1) sum
+    limit = n - 2 * root n
+    root = floor . sqrt . fromIntegral
