@@ -93,9 +93,6 @@ problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ tri
   where
     triangleNumbers = scanl1 (+) [1..]
 
-
--- I'd ideally like to implement memoization for the collatz function.
--- 
 -- 1000000
 problem14 :: Int -> Int
 problem14 n = fst . maximumBy (comparing snd) . fmap (\i -> (i, collatz i)) $ [1..n-1]
@@ -108,15 +105,11 @@ problem14 n = fst . maximumBy (comparing snd) . fmap (\i -> (i, collatz i)) $ [1
 
 -- 20
 problem15 :: Int -> Int
-problem15 gridSize = problem15' gridSize [2]
+problem15 gridSize = last $ (iterate (buildList 1) []) !! gridSize
   where
-    problem15' :: Int -> [Int] -> Int
-    problem15' 1 xs = last xs
-    problem15' n xs = problem15' (n-1) (buildList xs 1)
-    --
-    buildList :: [Int] -> Int -> [Int]
-    buildList []     a = [2*a]
-    buildList (x:xs) a = (a + x):(buildList xs (a + x))
+    buildList :: Int -> [Int] -> [Int]
+    buildList a []     = [2*a]
+    buildList a (x:xs) = (a + x):buildList (a + x) xs
 
 -- 1000
 problem16 :: Int -> Int
