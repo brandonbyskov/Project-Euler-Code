@@ -10,6 +10,8 @@ import Data.Ord
 import Data.Ratio
 import Numeric (showIntAtBase)
 
+import System.IO
+
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
 problem1 a b max = let f x = x * (g $ (max-1) `div` x) -- multiples of x less than max
@@ -71,6 +73,16 @@ problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
 -- 10001
 problem7 :: Int -> Int
 problem7 n = primes'!!(n-1)
+
+-- 13 "data/p008.txt"
+problem8 :: Int -> String -> IO Int
+problem8 n dataFile = readDigits dataFile
+                      >>= return . maximum . fmap problem8' . tails
+  where
+    problem8' xs = let sublist = take n xs
+                   in if length sublist >= n
+                        then product sublist
+                        else 0
 
 -- 1000
 problem9 :: Int -> Int
@@ -157,6 +169,13 @@ problem21 n = sum . filter predicate $ [2..n]
     predicate x = x == (sum . properDivisors . sum . properDivisors $ x) && x /= sum (properDivisors x)
     properDivisors :: Int -> [Int]
     properDivisors x = init (divisors x)
+
+-- "data/p022.txt"
+problem22 :: String -> IO Int
+problem22 dataFile = readNames dataFile
+                     >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
+  where
+    letterToValue c = (ord c) - 64
 
 -- 1000000
 problem36 :: Int -> Int
