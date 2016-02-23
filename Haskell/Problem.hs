@@ -183,6 +183,10 @@ problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [
     fibs :: [Integer]
     fibs = 1:1:zipWith (+) fibs (tail fibs)
 
+-- 5
+problem30 :: Int -> Int
+problem30 n = sum $ filter (\x -> x == (sum . fmap (^n) . toDigits $ x)) [10..(9^n)*(n+1)]
+
 problem34 :: Int
 problem34 = sum . filter predicate $ [10..2540160]
   where
