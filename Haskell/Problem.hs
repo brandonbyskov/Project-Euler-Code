@@ -253,8 +253,7 @@ problem67 :: String -> IO Int
 problem67 = problem18
 
 problem97 :: Int
-problem97 = let trim = (`mod`10000000000)
-            in fromIntegral . trim . (1+) . (28433*) . trim $ 2^7830457
+problem97 = fromIntegral . (`mod`10000000000) $ 1 + 28433 * 2^7830457
 
 problem104 :: Int
 problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
@@ -265,6 +264,21 @@ problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
     pandigitalTest x = isPandigital (x `mod` 1000000000) && isPandigitalSignificantDigits x
     isPandigitalSignificantDigits :: Integral a => a -> Bool
     isPandigitalSignificantDigits x = [1..9] == (intersect [1..9] (take 9 (toDigits x)))
+
+-- 99 100
+problem112 :: Int -> Int -> Int
+problem112 x y = fst . head . dropWhile (not . predicate)
+                 . iterate (\(a,count) -> let a' = a + 1
+                                          in if isBouncy a'
+                                               then (a', count + 1)
+                                               else (a', count) )
+                 $ (100,0)
+  where
+    isBouncy x = let ds       = toDigits x
+                     dsSorted = sort ds
+                 in (ds /= dsSorted) && (ds /= reverse dsSorted)
+    predicate (total, count) = total`mod`y == 0 && total`div`y == count`div`x
+
 
 --
 --problem352 :: Int -> Double
