@@ -106,3 +106,11 @@ zipSortBy _ xs [] = xs
 zipSortBy f (x:xs) (y:ys)
       | f x y /= GT = x:zipSortBy f  xs   (y:ys)
       | otherwise   = y:zipSortBy f (x:xs) ys
+
+zipSortSet :: Ord a => [a] -> [a] -> [a]
+zipSortSet []     ys = ys
+zipSortSet xs     [] = xs
+zipSortSet (x:xs) (y:ys)
+      | x == y    =   zipSortSet (x:xs) ys
+      | x < y     = x:zipSortSet  xs   (y:ys)
+      | otherwise = y:zipSortSet (x:xs) ys

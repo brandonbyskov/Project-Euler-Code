@@ -183,6 +183,14 @@ problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [
     fibs :: [Integer]
     fibs = 1:1:zipWith (+) fibs (tail fibs)
 
+-- 100
+problem29 :: Integer -> Int
+problem29 a = length $ distinctPowers 2
+  where
+    distinctPowers x
+      | x < a  = zipSortSet (fmap (x^) [2..a]) (distinctPowers (x+1))
+      | x == a = fmap (x^) [2..a]
+
 -- 5
 problem30 :: Int -> Int
 problem30 n = sum $ filter (\x -> x == (sum . fmap (^n) . toDigits $ x)) [10..(9^n)*(n+1)]
@@ -220,7 +228,7 @@ problem40 maxN = problem40' 1 maxN champernowne
       | n > maxN  = 1
       | otherwise = head list * problem40' (n*10) maxN (drop (n*9) list)
     champernowne :: [Int]
-    champernowne = fmap digitToInt (concat (fmap show [1..]))
+    champernowne = fmap digitToInt . concat . fmap show $ [1..]
 
 -- 1000
 problem48 :: Int -> Int
