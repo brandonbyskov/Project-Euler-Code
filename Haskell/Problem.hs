@@ -198,6 +198,15 @@ problem36 max = sum . filter isDoubleBasePalindrome $ [1..max-1]
     isBinaryPalindrome :: Int -> Bool
     isBinaryPalindrome x = (\ list -> list == reverse list) (showIntAtBase 2 intToDigit x "")
 
+problem38 :: Int
+problem38 = maximum
+            . concatMap (\a -> filter isPandigital . fmap digitsToInt
+                             . fmap (concat . fmap toDigits)
+                             . dropWhile (\as -> sum (fmap (numDigits) as) <  9)
+                             . takeWhile (\as -> sum (fmap (numDigits) as) <= 9)
+                             . fmap (fmap (a*)) $ [[1..n] | n <- [2..9]] )
+            $ [1..9876]
+
 -- 1000000
 problem40 :: Int -> Int
 problem40 maxN = problem40' 1 maxN champernowne

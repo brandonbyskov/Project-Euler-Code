@@ -83,6 +83,9 @@ isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
 sqrRoot :: (Integral a) => a -> a
 sqrRoot = floor . sqrt . fromIntegral
 
+digitsToInt :: [Int] -> Int
+digitsToInt = sum . zipWith (*) (iterate (10*) 1) . reverse
+
 numDigits :: (Integral a) => a -> Int
 numDigits = (1+) . floor . logBase 10 . fromIntegral
 
