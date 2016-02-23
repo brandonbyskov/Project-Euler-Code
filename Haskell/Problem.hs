@@ -183,6 +183,13 @@ problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [
     fibs :: [Integer]
     fibs = 1:1:zipWith (+) fibs (tail fibs)
 
+-- 10001
+problem28 :: Int -> Int
+problem28 n
+  | n <= 0    = 0
+  | even n    = problem28 (n+1) - 3*((n + 1)^2 - n)
+  | otherwise = 1 + 10 * sum [2,4..n] + 4 * sum (fmap (\a -> a*a) [1,3..n-2])
+
 -- 100
 problem29 :: Integer -> Int
 problem29 a = length $ distinctPowers 2
