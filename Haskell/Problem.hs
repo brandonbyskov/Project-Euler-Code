@@ -58,14 +58,15 @@ problem5 max = problem5' 2
     largestMultiple :: Int -> Int
     largestMultiple x = last . takeWhile (< max) $ iterate (*x) x
 
+--100
 problem6 :: Int -> Int
-problem6 max = squareOfSum [1..max] - sumOfSquares [1..max]
+problem6 n = squareOfSum [1..n] - sumOfSquares [1..n]
   where
     squareOfSum :: (Integral a) => [a] -> a
-    squareOfSum list = (sum list)^2
+    squareOfSum xs = (sum xs)^2
     --
     sumOfSquares :: (Integral a) => [a] -> a
-    sumOfSquares list = sum . fmap (\ x -> x*x) $ list
+    sumOfSquares xs = sum . fmap (\ x -> x*x) $ xs
 
 -- 10001
 problem7 :: Int -> Int
@@ -152,11 +153,8 @@ problem18 dataFile = readGrid dataFile >>= return . head . foldr1 solveRow
     solveRow (a:as) (b1:b2:bs) = (a + max b1 b2):(solveRow as (b2:bs))
 
 -- 100
-problem20 :: Int -> Int
+problem20 :: Integer -> Int
 problem20 x = sum .toDigits . factorial $ x
-  where
-    factorial ::  (Integral a) => a -> Integer
-    factorial n = foldl1 (*) [1..(toInteger n)]
 
 -- 10000
 problem21 :: Int -> Int
@@ -173,6 +171,11 @@ problem22 dataFile = readNames dataFile
                      >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
   where
     letterToValue c = (ord c) - 64
+
+problem34 :: Int
+problem34 = sum . filter predicate $ [10..2540160]
+  where
+    predicate x = x == (sum . fmap factorial . toDigits $ x)
 
 -- 1000000
 problem36 :: Int -> Int

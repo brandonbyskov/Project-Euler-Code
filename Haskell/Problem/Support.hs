@@ -68,6 +68,9 @@ numDivisors x
       | isDivisible d x = 2 + addDivisors (d+1) root x
       | otherwise       =     addDivisors (d+1) root x
 
+factorial :: (Integral a) => a -> a
+factorial n = foldl' (*) 1 [2..n]
+
 isPalindrome :: (Integral a, Show a) => a -> Bool
 isPalindrome x 
   | x < 0 = False
