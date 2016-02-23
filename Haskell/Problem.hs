@@ -279,6 +279,13 @@ problem112 x y = fst . head . dropWhile (not . predicate)
                  in (ds /= dsSorted) && (ds /= reverse dsSorted)
     predicate (total, count) = total`mod`y == 0 && total`div`y == count`div`x
 
+-- 30
+problem119 :: Int -> Int
+problem119 n = snd . (!! (n - 1)) . filter (\(a,b) -> sum (toDigits b) == a) $ f 7
+  where
+    f 171 = (171,171*171):g 171 -- highest theoretically with 64-bit Int
+    f x   = (x,x*x):zipSortBy (comparing snd) (g x) (f (x+1))
+    g x = iterate (\(_,b) -> (x, x * b)) (x,x^3)
 
 --
 --problem352 :: Int -> Double
@@ -321,18 +328,13 @@ problem401 n = problem401' ( n) 1 0 0
 
 -- 500500
 problem500 :: Int -> Int
-problem500 divisors = let mult = \x y-> x * y `mod` 500500507
-                      in foldl' mult 1 . take divisors $ powersOfPrimes 0
+problem500 divisors = let trim = \x -> if x >= 500500507 then x `mod` 500500507 else x
+                      in foldl' (\a b -> trim (a*b)) 1 . take divisors $ powersOfPrimes 0
   where
     -- These functions create a sorted infinite list of primes and their powers
     powersOfPrimes :: Int -> [Int]
     powersOfPrimes 0 = zipSort primes' (powersOfPrimes 1)
     powersOfPrimes n = (2^2^n):zipSort (fmap (^2^n) $ tail primes') (powersOfPrimes (n+1))
-    --
-    zipSort :: [Int] -> [Int] -> [Int]
-    zipSort (x:xs) (y:ys)
-      | x <= y    = x:zipSort  xs   (y:ys)
-      | otherwise = y:zipSort (x:xs) ys
 
 -- Correct but too slow. Needs a better prime number algorithm, 
 -- or take advantage of geometric series.

@@ -86,5 +86,20 @@ sqrRoot = floor . sqrt . fromIntegral
 numDigits :: (Integral a) => a -> Int
 numDigits = (1+) . floor . logBase 10 . fromIntegral
 
-toDigits :: (Integral a) => a => [Int]
+toDigits :: (Integral a) => a -> [Int]
 toDigits = fmap digitToInt . show . toInteger
+
+-- Zip Sort can quickly merge two sorted lists.
+zipSort :: Ord a => [a] -> [a] -> [a]
+zipSort []     ys = ys
+zipSort xs     [] = xs
+zipSort (x:xs) (y:ys)
+      | x <= y    = x:zipSort  xs   (y:ys)
+      | otherwise = y:zipSort (x:xs) ys
+
+zipSortBy :: (a -> a -> Ordering) -> [a] -> [a] -> [a]
+zipSortBy _ [] ys = ys
+zipSortBy _ xs [] = xs
+zipSortBy f (x:xs) (y:ys)
+      | f x y /= GT = x:zipSortBy f  xs   (y:ys)
+      | otherwise   = y:zipSortBy f (x:xs) ys
