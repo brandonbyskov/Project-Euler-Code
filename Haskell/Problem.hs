@@ -95,7 +95,7 @@ problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
 
 -- 2000000
 problem10 :: Int -> Int
-problem10 max = sum $ takeWhile (< max) primes'
+problem10 n = sum $ takeWhile (< n) primes'
 
 -- 500
 problem12 :: Int -> Int
@@ -129,7 +129,6 @@ problem16 n
 
 -- 1000
 problem17 :: Int -> Int
-problem17 0 = 0
 problem17 n = sum . fmap letterCount $ [1..n]
   where
     letterCount n
@@ -171,6 +170,13 @@ problem22 dataFile = readNames dataFile
                      >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
   where
     letterToValue c = (ord c) - 64
+
+-- 1000
+problem25 :: Int -> Int
+problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [1..] $ fibs
+  where
+    fibs :: [Integer]
+    fibs = 1:1:zipWith (+) fibs (tail fibs)
 
 problem34 :: Int
 problem34 = sum . filter predicate $ [10..2540160]

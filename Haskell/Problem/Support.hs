@@ -68,6 +68,7 @@ numDivisors x
       | isDivisible d x = 2 + addDivisors (d+1) root x
       | otherwise       =     addDivisors (d+1) root x
 
+-- Factorial grows very quickly. Use type Integer for n > 20
 factorial :: (Integral a) => a -> a
 factorial n = foldl' (*) 1 [2..n]
 
