@@ -252,6 +252,10 @@ problem65 maxIter
 problem67 :: String -> IO Int
 problem67 = problem18
 
+problem97 :: Int
+problem97 = let trim = (`mod`10000000000)
+            in fromIntegral . trim . (1+) . (28433*) . trim $ 2^7830457
+
 problem104 :: Int
 problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
   where
