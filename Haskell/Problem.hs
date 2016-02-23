@@ -103,6 +103,11 @@ problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ tri
   where
     triangleNumbers = scanl1 (+) [1..]
 
+-- "data/p013.txt"
+problem13 :: String -> IO Int
+problem13 dataFile = readIntegers dataFile
+                     >>= return . fromIntegral . (\a -> a `div` 10^(numDigits a - 10)) . sum
+
 -- 1000000
 problem14 :: Int -> Int
 problem14 n = fst . maximumBy (comparing snd) . fmap (\i -> (i, collatz i)) $ [1..n-1]

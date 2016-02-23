@@ -23,3 +23,8 @@ readNames path = openFile path ReadMode
     split cs  = case span (/= ',') cs of
     			  (word, [])   -> word:[]
     			  (word, rest) -> word:split (tail rest)
+
+readIntegers :: String -> IO [Integer]
+readIntegers path = openFile path ReadMode
+                    >>= hGetContents
+                    >>= return . fmap read . lines
