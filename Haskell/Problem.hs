@@ -3,14 +3,12 @@ module Problem where
 import Problem.FileIO
 import Problem.Support
 
-import Data.Char
+import Data.Char (digitToInt, intToDigit, ord)
 import Data.List
-import Data.Maybe
-import Data.Ord
-import Data.Ratio
+import Data.Maybe (fromJust)
+import Data.Ord (comparing)
+import Data.Ratio (numerator)
 import Numeric (showIntAtBase)
-
-import System.IO
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
@@ -36,8 +34,7 @@ problem3 x = problem3' 2 0
                                 else if isPrime divisor then problem3' (divisor+1) divisor
                                      else problem3' (divisor+1) highest
       | otherwise             = problem3' (divisor+1) highest
-    problem3'' = 0
-    root = floor . sqrt . fromIntegral $ x
+    root = sqrRoot x
 
 -- 3
 problem4 :: Int -> Int
@@ -316,12 +313,11 @@ problem518 n = problem518' (1+head primes') primes' (tail primes') 0
         let diff' = n2*n2
         let c = diff' `div` n1 - 1
         if ( c < n ) 
-          then if (diff' `mod` n1 == 0) && not (hasPrimeDivisors c (root c) primes')
+          then if (diff' `mod` n1 == 0) && not (hasPrimeDivisors c primes')
                  then
                    problem518' n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
                  else problem518' n1 pList1 (tail pList2) sum
           else if head pList1 >= limit
                  then sum
                  else problem518' (1+head (tail pList1)) (tail pList1) (drop 2 pList1) sum
-    limit = n - 2 * root n
-    root = floor . sqrt . fromIntegral
+    limit = n - 2 * sqrRoot n

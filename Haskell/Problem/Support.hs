@@ -6,38 +6,32 @@ import Data.List
 --Prime functions
 
 primes :: [Int]
-primes = 2:[x::Int | x <- tail divisorList, isPrime x]
+primes = 2:[x | x <- tail divisorList, isPrime x]
 
 -- This prime number generator is much faster, but is memory expensive.
 primes' :: [Int]
-primes' = do
-  let pList =  drop 3 primes'
-  2:3:5:7:[x::Int | x <- drop 4 divisorList, not (hasPrimeDivisors x (floor (sqrt (fromIntegral x))) pList)]
+primes' = let pList = drop 3 primes'
+          in 2:3:5:7:[x | x <- drop 4 divisorList, not (hasPrimeDivisors x pList)]
 
-hasPrimeDivisors :: Int -> Int -> [Int] -> Bool
-hasPrimeDivisors x max pList
-  | head pList > max = False
-  | otherwise = (isDivisible (head pList) x) || (hasPrimeDivisors x max (tail pList))
+hasPrimeDivisors :: Int -> [Int] -> Bool
+hasPrimeDivisors x pList
+  | head pList > root = False
+  | otherwise         = (isDivisible (head pList) x) || (hasPrimeDivisors x (tail pList))
+  where
+    root = sqrRoot x
 
 divisorList :: [Int]
 divisorList = 2:3:5:(tail (concatMap (\x -> fmap (x+) primesShortList) [0,30..]))
   where
-    primesShortList ::[Int]
+    primesShortList :: [Int]
     primesShortList = [1,7,11,13,17,19,23,29] 
 
-isPrime :: (Integral a) => a -> Bool
+isPrime :: Int -> Bool
 isPrime x
-  | x < 5           = if x == 2 || x == 3 then True else False
-  | even x          = False
-  | isDivisible 3 x = False
-  | otherwise       = not (hasDivisors 5 (floor (sqrt (fromIntegral x))) x)
-  where
-    hasDivisors :: (Integral a) => a -> a -> a -> Bool
-    hasDivisors divisor max x
-      | divisor > max = False
-      | otherwise     = isDivisible divisor x || isDivisible (divisor + 2) x || hasDivisors (divisor+6) max x
+  | x < 5     = x == 2 || x == 3
+  | otherwise = not . or . fmap (\a -> isDivisible a x) . takeWhile (<= sqrRoot x) $ divisorList
 
-getNextPrime :: (Integral a) => a -> a
+getNextPrime :: Int -> Int
 getNextPrime x
   | x < 2     = 2
   | even x    = if isPrime (x+1) then x+1 else getNextPrime (x+1)
@@ -45,16 +39,18 @@ getNextPrime x
 
 --End Prime functions
 
+-- generates a sorted list of divisors
 divisors :: Int -> [Int]
 divisors x = generateDivisors 1 []
   where
-    root = floor (sqrt (fromIntegral x))
     generateDivisors :: Int -> [Int] -> [Int]
     generateDivisors d upperList
-      | d == root       = if isDivisible d x
-                            then (if d*d == x then d:upperList else d:(x`div`d):upperList)
+      | d == sqrRoot x  = if isDivisible d x
+                            then if d*d == x 
+                                   then d:upperList
+                                   else d:(x`div`d):upperList
                             else upperList
-      | isDivisible d x = d:(generateDivisors (d+1) ((x`div`d):upperList))
+      | isDivisible d x = d:generateDivisors (d+1) ((x`div`d):upperList)
       | otherwise       = generateDivisors (d+1) upperList
 
 -- True if x is divisible by d
@@ -64,13 +60,13 @@ isDivisible d x = (x `mod` d) == 0
 numDivisors :: (Integral a) => a -> a
 numDivisors x
   | x <= 1    = if x == 1 then 1 else 0
-  | otherwise = 2 + addDivisors 2 (floor (sqrt (fromIntegral x))) x
+  | otherwise = 2 + addDivisors 2 (sqrRoot x) x
   where
     addDivisors :: (Integral a) => a -> a -> a -> a
-    addDivisors d max x
-      | d >= max        = if d*d == x then 1 else 0
-      | isDivisible d x = 2 + addDivisors (d+1) max x
-      | otherwise       = addDivisors (d+1) max x
+    addDivisors d root x
+      | d >= root       = if d*d == x then 1 else 0
+      | isDivisible d x = 2 + addDivisors (d+1) root x
+      | otherwise       =     addDivisors (d+1) root x
 
 isPalindrome :: (Integral a, Show a) => a -> Bool
 isPalindrome x 
@@ -80,5 +76,8 @@ isPalindrome x
 isPandigital :: Integral a => a -> Bool
 isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
 
+sqrRoot :: (Integral a) => a -> a
+sqrRoot = floor . sqrt . fromIntegral
+
 toDigits :: (Integral a) => a => [Int]
-toDigits x = fmap digitToInt (show (toInteger x))
+toDigits = fmap digitToInt . show . toInteger
