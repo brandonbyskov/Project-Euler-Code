@@ -166,8 +166,6 @@ problem21 n = sum . filter predicate $ [2..n]
   where
     predicate :: Int -> Bool
     predicate x = x == (sum . properDivisors . sum . properDivisors $ x) && x /= sum (properDivisors x)
-    properDivisors :: Int -> [Int]
-    properDivisors x = init (divisors x)
 
 -- "data/p022.txt"
 problem22 :: String -> IO Int
@@ -236,6 +234,14 @@ problem40 maxN = problem40' 1 maxN champernowne
       | otherwise = head list * problem40' (n*10) maxN (drop (n*9) list)
     champernowne :: [Int]
     champernowne = fmap digitToInt . concat . fmap show $ [1..]
+
+-- 4
+problem47 :: Int -> Int
+problem47 n = head . head
+            . filter ((\xs -> n - 1 + head xs == last xs) . take n)
+            . tails
+            . filter ((== n) . length . filter isPrime . properDivisors)
+            $ [1..]
 
 -- 1000
 problem48 :: Int -> Int

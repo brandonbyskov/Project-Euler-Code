@@ -53,6 +53,9 @@ divisors x = generateDivisors 1 []
       | isDivisible d x = d:generateDivisors (d+1) ((x`div`d):upperList)
       | otherwise       = generateDivisors (d+1) upperList
 
+properDivisors :: Int -> [Int]
+properDivisors = init . divisors
+
 -- True if x is divisible by d
 isDivisible :: (Integral a) => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
