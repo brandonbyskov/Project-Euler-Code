@@ -12,8 +12,7 @@ import Numeric (showIntAtBase)
 
 -- 3 5 1000
 problem1 :: Int -> Int -> Int -> Int
-problem1 a b max = let f x = x * (g $ (max-1) `div` x) -- multiples of x less than max
-                       g n = n*(n+1) `div` 2 -- equivalent to sum [1..n]
+problem1 a b max = let f x = x * (sum1ToN $ (max-1) `div` x) -- multiples of x less than max
                    in f a + f b - f (a*b)
 
 -- 4000000
@@ -195,6 +194,12 @@ problem22 dataFile = readNames dataFile
                      >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
   where
     letterToValue c = (ord c) - 64
+
+problem23 :: Int
+problem23 = sum1ToN 28123 - sum (takeWhile (<= 28123) abundantSums)
+  where
+    abundantSums = foldr1 (\ (x:xs) (ys) -> (x+x):zipSortSet (fmap (x+) (xs)) ys) (tails abundantNumbers)
+    abundantNumbers = filter (\x -> x < sum (properDivisors x)) [12..]
 
 -- 1000
 problem25 :: Int -> Int

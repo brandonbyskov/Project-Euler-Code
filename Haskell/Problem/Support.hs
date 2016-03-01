@@ -37,7 +37,7 @@ getNextPrime x
   | even x    = if isPrime (x+1) then x+1 else getNextPrime (x+1)
   | otherwise = if isPrime (x+2) then x+2 else getNextPrime (x+2)
 
---End Prime functions
+-- Divisibility and Divisor Functions
 
 -- generates a sorted list of divisors
 divisors :: Int -> [Int]
@@ -71,20 +71,7 @@ numDivisors x
       | isDivisible d x = 2 + addDivisors (d+1) root x
       | otherwise       =     addDivisors (d+1) root x
 
--- Factorial grows very quickly. Use type Integer for n > 20
-factorial :: (Integral a) => a -> a
-factorial n = foldl' (*) 1 [2..n]
-
-isPalindrome :: (Integral a, Show a) => a -> Bool
-isPalindrome x 
-  | x < 0 = False
-  | otherwise = (show x) == reverse (show x)
-
-isPandigital :: Integral a => a -> Bool
-isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
-
-sqrRoot :: (Integral a) => a -> a
-sqrRoot = floor . sqrt . fromIntegral
+-- Digit Functions 
 
 digitsToInt :: [Int] -> Int
 digitsToInt = sum . zipWith (*) (iterate (10*) 1) . reverse
@@ -94,6 +81,31 @@ numDigits = (1+) . floor . logBase 10 . fromIntegral
 
 toDigits :: (Integral a) => a -> [Int]
 toDigits = fmap digitToInt . show . toInteger
+
+-- General Math Functions
+
+-- Factorial grows very quickly. Use type Integer for n > 20
+factorial :: (Integral a) => a -> a
+factorial n = foldl' (*) 1 [2..n]
+
+-- equivalent to sum [1..n]
+sum1ToN :: Integral a => a -> a
+sum1ToN n = n*(n+1) `div` 2
+
+sqrRoot :: (Integral a) => a -> a
+sqrRoot = floor . sqrt . fromIntegral
+
+-- Number Tests
+
+isPalindrome :: (Integral a, Show a) => a -> Bool
+isPalindrome x 
+  | x < 0 = False
+  | otherwise = (show x) == reverse (show x)
+
+isPandigital :: Integral a => a -> Bool
+isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
+
+-- Sorting Functions
 
 -- Zip Sort can quickly merge two sorted lists.
 zipSort :: Ord a => [a] -> [a] -> [a]
