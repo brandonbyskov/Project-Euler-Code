@@ -208,6 +208,21 @@ problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [
     fibs :: [Integer]
     fibs = 1:1:zipWith (+) fibs (tail fibs)
 
+-- 1000
+problem26 :: Int -> Int
+problem26 n = fst . maximumBy (comparing snd) . fmap recipCycle $ [1..n-1]
+  where
+    recipCycle :: Int -> (Int,Int)
+    recipCycle a = let (x:xs) = tail $ decimalExpansion a
+                   in (a, loopSize [(x,1)] xs 2)
+    decimalExpansion :: Int -> [(Int,Int)]
+    decimalExpansion denom = iterate (\(a,r) -> divMod (10*r) denom) (0,1)
+    loopSize :: [((Int,Int),Int)] -> [(Int,Int)] -> Int -> Int
+    loopSize as (b:bs) depth = let matches = filter (\(x,y) -> x == b) as
+                               in if matches == []
+                                    then loopSize ((b,depth):as) (tail bs) (depth + 1)
+                                    else depth - snd (head matches)
+
 -- 10001
 problem28 :: Int -> Int
 problem28 n
