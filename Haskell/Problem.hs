@@ -314,6 +314,16 @@ problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes' -- len
     primeSums :: Int -> [Int]
     primeSums n = fmap (sum . take n) $ tails primes'
 
+-- 100 1000000
+problem53 :: Int -> Int -> Int
+problem53 maxN minC = length . filter (> toInteger minC) $ [combinations n r | n <- [1..maxN], r <- [1..n]]
+  where
+    fact :: Int -> Integer
+    fact = (factorials!!)
+    factorials :: [Integer]
+    factorials = 1:zipWith (*) [1..] factorials
+    combinations n r = (fact n) `div` (fact r * fact (n-r))
+
 -- 0.1
 problem58 :: Double -> Int
 problem58 max = problem58' 3 3 0 1 2
