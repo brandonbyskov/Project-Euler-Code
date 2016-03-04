@@ -302,8 +302,7 @@ problem47 n = head . head
 
 -- 1000
 problem48 :: Int -> Int
-problem48 1 = 1
-problem48 x = fromIntegral (((toInteger x)^x + (toInteger (problem48 (x-1)))) `mod` 10000000000)
+problem48 x = fromIntegral . (`mod` 10000000000) . sum . fmap (\a -> a^a ) $ [1..toInteger x]
 
 -- 1000000
 problem50 :: Int -> Int
@@ -340,7 +339,7 @@ problem58 max = problem58' 3 3 0 1 2
 problem65 :: Int -> Int
 problem65 maxIter 
   | maxIter <= 0 = 0
-  | otherwise    = sum (toDigits (numerator (e 1 maxIter)))
+  | otherwise    = sum . toDigits . numerator $ e 1 maxIter
   where
     e :: Int -> Int -> Rational
     e 1 maxIter = 2 + e 2 maxIter
@@ -443,16 +442,15 @@ problem518 :: Int -> Int
 problem518 n = problem518' (1+head primes') primes' (tail primes') 0
   where
     problem518' :: Int -> [Int] -> [Int] -> Int -> Int
-    problem518' n1 pList1 pList2 sum = do
-        let n2 = (1 + head pList2)
-        let diff' = n2*n2
-        let c = diff' `div` n1 - 1
-        if ( c < n ) 
-          then if (diff' `mod` n1 == 0) && not (hasPrimeDivisors c primes')
-                 then
-                   problem518' n1 pList1 (tail pList2) (sum + (head pList1) + (head pList2) + c)
-                 else problem518' n1 pList1 (tail pList2) sum
-          else if head pList1 >= limit
-                 then sum
-                 else problem518' (1+head (tail pList1)) (tail pList1) (drop 2 pList1) sum
+    problem518' n1 (p1:ps1) (p2:ps2) acc =
+        let n2   = p2 + 1
+            diff = n2*n2
+            c    = diff `div` n1 - 1
+        in if c < n
+           then if (diff `mod` n1 == 0) && not (hasPrimeDivisors c primes')
+                  then problem518' n1 (p1:ps1) ps2 (acc + p1 + p2 + c)
+                  else problem518' n1 (p1:ps1) ps2 acc
+           else if p1 >= limit
+                  then acc
+                  else problem518' (1+head ps1) ps1 (tail ps1) acc
     limit = n - 2 * sqrRoot n

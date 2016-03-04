@@ -10,18 +10,18 @@ primes = 2:[x | x <- tail divisorList, isPrime x]
 
 -- This prime number generator is much faster, but is memory expensive.
 primes' :: [Int]
-primes' = let pList = drop 3 primes'
-          in 2:3:5:7:[x | x <- drop 4 divisorList, not (hasPrimeDivisors x pList)]
+primes' = let ps = drop 3 primes'
+          in 2:3:5:7:[x | x <- drop 4 divisorList, not (hasPrimeDivisors x ps)]
 
 hasPrimeDivisors :: Int -> [Int] -> Bool
-hasPrimeDivisors x pList
-  | head pList > root = False
-  | otherwise         = (isDivisible (head pList) x) || (hasPrimeDivisors x (tail pList))
+hasPrimeDivisors x (p:ps)
+  | p > root  = False
+  | otherwise = (isDivisible p x) || (hasPrimeDivisors x ps)
   where
     root = sqrRoot x
 
 divisorList :: [Int]
-divisorList = 2:3:5:(tail (concatMap (\x -> fmap (x+) primesShortList) [0,30..]))
+divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..] )
   where
     primesShortList :: [Int]
     primesShortList = [1,7,11,13,17,19,23,29] 
@@ -103,7 +103,7 @@ isPalindrome x
   | otherwise = (show x) == reverse (show x)
 
 isPandigital :: Integral a => a -> Bool
-isPandigital x = [1..9] == (intersect [1..9] (toDigits x))
+isPandigital x = [1..9] == sort (toDigits x)
 
 -- Sorting Functions
 
