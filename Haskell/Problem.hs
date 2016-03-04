@@ -313,6 +313,15 @@ problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes' -- len
     primeSums :: Int -> [Int]
     primeSums n = fmap (sum . take n) $ tails primes'
 
+-- 6
+problem52 :: Int -> Int
+problem52 n = let xs = concatMap (\a -> [a`div`10..a`div`n]) (iterate (*10) 100)
+              in head $ filter sameDigitMultiples xs
+  where
+    sameDigitMultiples :: Int -> Bool
+    sameDigitMultiples x = let dss = fmap (sort . toDigits . (x*)) [1..n]
+                           in replicate n (head dss) == dss
+
 -- 100 1000000
 problem53 :: Int -> Int -> Int
 problem53 maxN minC = length . filter (> toInteger minC) $ [combinations n r | n <- [1..maxN], r <- [1..n]]
