@@ -223,6 +223,15 @@ problem26 n = fst . maximumBy (comparing snd) . fmap recipCycle $ [1..n-1]
                                     then loopSize ((b,depth):as) (tail bs) (depth + 1)
                                     else depth - snd (head matches)
 
+-- 1000
+problem27 :: Int -> Int
+problem27 n = let bs = takeWhile (< n) primes'
+                  a' = if even n then n - 1 else n - 2
+                  as = [negate a',(negate a' + 2)..a']
+              in (\(a,b,c) -> a*b ) . maximumBy (comparing (\(a,b,c) -> c)) $ [(a,b,consecutivePrimes a b) | a <- as, b <- bs]
+  where
+    consecutivePrimes a b = length . takeWhile (\x -> isPrime (x*x + a*x + b) ) $ [0..]
+
 -- 10001
 problem28 :: Int -> Int
 problem28 n
