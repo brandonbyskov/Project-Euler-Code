@@ -277,6 +277,12 @@ problem40 maxN = problem40' 1 maxN champernowne
     champernowne :: [Int]
     champernowne = fmap digitToInt . concat . fmap show $ [1..]
 
+problem41 :: Int
+problem41 = maximum . filter isPrime $ pandigitals
+  where
+    pandigitals :: [Int]
+    pandigitals = fmap (sum . zipWith (*) (iterate (10*) 1)) $ concatMap (\n -> permutations [1..n]) [1..9]
+
 -- 4
 problem47 :: Int -> Int
 problem47 n = head . head
