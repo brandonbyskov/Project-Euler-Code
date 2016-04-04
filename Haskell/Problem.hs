@@ -7,7 +7,7 @@ import Data.Char (digitToInt, intToDigit, ord)
 import Data.List
 import Data.Maybe (fromJust)
 import Data.Ord (comparing)
-import Data.Ratio (numerator)
+import Data.Ratio ((%), numerator, denominator)
 import Numeric (showIntAtBase)
 
 -- 3 5 1000
@@ -342,6 +342,14 @@ problem53 maxN minC = length . filter (> toInteger minC) $ [combinations n r | n
 -- 100
 problem56 :: Int -> Int
 problem56 n = maximum . fmap (sum . toDigits) $ [a ^ b| a <- [1..(fromIntegral n)], b <- [1..n]]
+
+-- 1000
+problem57 :: Int -> Int
+problem57 n = length . filter (\a -> (numDigits . numerator $ a) > (numDigits . denominator $ a) )
+            . take n $ convergents
+  where
+    convergents :: [Rational]
+    convergents = fmap ($ 1%2) . iterate (\a b-> a $ 1/(2+b) ) $ (1+)
 
 -- 0.1
 problem58 :: Double -> Int
