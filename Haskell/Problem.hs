@@ -275,6 +275,13 @@ problem38 = maximum
                              . fmap (fmap (a*)) $ [[1..n] | n <- [2..9]] )
           $ [1..9876]
 
+-- 1000
+problem39 :: Int -> Int
+problem39 n = fst . maximumBy (comparing snd) . fmap (\a -> (a, rightAngleSolutions a)) $ [3..n]
+  where
+    rightAngleSolutions x = length . filter isPythagoreanTriple $ [(a,b, x-(a+b)) | b <- [1..x`div`2], a <- [1..b], a+b <= 2*x`div`3]
+    isPythagoreanTriple (a,b,c) = a*a + b*b == c*c
+
 -- 1000000
 problem40 :: Int -> Int
 problem40 maxN = problem40' 1 maxN champernowne
