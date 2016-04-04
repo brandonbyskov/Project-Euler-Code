@@ -339,6 +339,10 @@ problem53 maxN minC = length . filter (> toInteger minC) $ [combinations n r | n
     factorials = 1:zipWith (*) [1..] factorials
     combinations n r = (fact n) `div` (fact r * fact (n-r))
 
+-- 100
+problem56 :: Int -> Int
+problem56 n = maximum . fmap (sum . toDigits) $ [a ^ b| a <- [1..(fromIntegral n)], b <- [1..n]]
+
 -- 0.1
 problem58 :: Double -> Int
 problem58 max = problem58' 3 3 0 1 2
