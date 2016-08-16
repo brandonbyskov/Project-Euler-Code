@@ -339,6 +339,12 @@ problem53 maxN minC = length . filter (> toInteger minC) $ [combinations n r | n
     factorials = 1:zipWith (*) [1..] factorials
     combinations n r = (fact n) `div` (fact r * fact (n-r))
 
+-- 10000 50
+problem55 :: Int -> Int -> Int
+problem55 n limit = length . filter isLychrel $ [1..(toInteger n)]
+  where
+    isLychrel = not . any isPalindrome . take limit . tail . iterate (\a -> a + reverseDigits a)
+
 -- 100
 problem56 :: Int -> Int
 problem56 n = maximum . fmap (sum . toDigits) $ [a ^ b| a <- [1..(fromIntegral n)], b <- [1..n]]

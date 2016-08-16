@@ -73,14 +73,17 @@ numDivisors x
 
 -- Digit Functions 
 
-digitsToInt :: [Int] -> Int
-digitsToInt = sum . zipWith (*) (iterate (10*) 1) . reverse
+digitsToInt :: Integral a => [Int] -> a
+digitsToInt = fromIntegral . sum . zipWith (*) (iterate (10*) 1) . reverse
 
 numDigits :: Integral a => a -> Int
 numDigits = length . show . toInteger
 
 toDigits :: (Integral a) => a -> [Int]
 toDigits = fmap digitToInt . show . toInteger
+
+reverseDigits :: Integral a => a -> a
+reverseDigits = digitsToInt . reverse . toDigits
 
 -- General Math Functions
 
