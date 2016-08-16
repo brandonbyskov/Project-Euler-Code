@@ -363,6 +363,11 @@ problem58 max = problem58' 3 3 0 1 2
       | isPrime x = problem58' (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
       | otherwise = problem58' (x+increment) (corner-1)  numPrimes    (counted+1) increment
 
+problem63 :: Int
+problem63 = sum
+          . fmap (length . takeWhile (== True) . zipWith (==) [1..] . fmap numDigits . (\a -> iterate (*a) a))
+          $ [1..9]
+
 -- 100
 problem65 :: Int -> Int
 problem65 maxIter 
