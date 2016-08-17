@@ -391,6 +391,12 @@ problem65 maxIter
 problem67 :: String -> IO Int
 problem67 = problem18
 
+-- 1000000000
+problem94 :: Int -> Int
+problem94 limit = sum $ takeWhile (<= limit) perimeters
+  where
+    perimeters = 16:50:zipWith (+) (cycle [12, -12]) (zipWith (\a b -> 4*a - b) (tail perimeters) perimeters)
+
 problem97 :: Int
 problem97 = fromIntegral . (`mod`10000000000) $ 1 + 28433 * 2^7830457
 
