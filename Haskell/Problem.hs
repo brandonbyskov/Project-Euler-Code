@@ -432,6 +432,14 @@ problem119 n = snd . (!! (n - 1)) . filter (\(a,b) -> sum (toDigits b) == a) $ f
     f x   = (x,x*x):zipSortBy (comparing snd) (g x) (f (x+1))
     g x = iterate (\(_,b) -> (x, x * b)) (x,x^3)
 
+-- 100000000
+problem125 :: Int -> Int
+problem125 n = sum . foldr1 zipSortSet
+             . fmap (filter isPalindrome)
+             . takeWhile (not . null)
+             . fmap (takeWhile (<n) . tail . scanl1 (+))
+             $ tails squares
+
 --
 --problem352 :: Int -> Double
 --problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])

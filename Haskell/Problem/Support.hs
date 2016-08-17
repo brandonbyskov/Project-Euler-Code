@@ -108,6 +108,11 @@ isPalindrome x
 isPandigital :: Integral a => a -> Bool
 isPandigital x = [1..9] == sort (toDigits x)
 
+-- Number Lists
+
+squares :: [Int]
+squares = 1:zipWith (+) [3,5..] squares
+
 -- Sorting Functions
 
 -- Zip Sort can quickly merge two sorted lists.
@@ -125,6 +130,7 @@ zipSortBy f (x:xs) (y:ys)
       | f x y /= GT = x:zipSortBy f  xs   (y:ys)
       | otherwise   = y:zipSortBy f (x:xs) ys
 
+-- creates a sorted set
 zipSortSet :: Ord a => [a] -> [a] -> [a]
 zipSortSet []     ys = ys
 zipSortSet xs     [] = xs
