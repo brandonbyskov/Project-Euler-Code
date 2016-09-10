@@ -266,6 +266,17 @@ problem36 max = sum . filter isDoubleBasePalindrome $ [1..max-1]
     isBinaryPalindrome :: Int -> Bool
     isBinaryPalindrome x = (\ list -> list == reverse list) (showIntAtBase 2 intToDigit x "")
 
+problem37 :: Int
+problem37 = sum . filter isTruncatableLtR . concatMap buildTruncatableRtL $ baseDigits
+  where
+    baseDigits = [2,3,5,7]
+    ds = [1,3,7,9]
+    isTruncatableLtR x = all isPrime . fmap (x`mod`) . takeWhile (<x) . iterate (*10) $ 10
+    buildTruncatableRtL x
+      | x < 10    =   concatMap (buildTruncatableRtL . (10*x +)) ds
+      | isPrime x = x:concatMap (buildTruncatableRtL . (10*x +)) ds
+      | otherwise = []
+
 problem38 :: Int
 problem38 = maximum
           . concatMap (\a -> filter isPandigital . fmap digitsToInt
