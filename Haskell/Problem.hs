@@ -271,7 +271,7 @@ problem37 = sum . filter isTruncatableLtR . concatMap buildTruncatableRtL $ base
   where
     baseDigits = [2,3,5,7]
     ds = [1,3,7,9]
-    isTruncatableLtR x = all isPrime . fmap (x`mod`) . takeWhile (<x) . iterate (*10) $ 10
+    isTruncatableLtR x = all isPrime . fmap (x`mod`) . takeWhile (<x) $ iterate (*10) 10
     buildTruncatableRtL x
       | x < 10    =   concatMap (buildTruncatableRtL . (10*x +)) ds
       | isPrime x = x:concatMap (buildTruncatableRtL . (10*x +)) ds
@@ -401,6 +401,10 @@ problem65 maxIter
 -- "data/p067.txt"
 problem67 :: String -> IO Int
 problem67 = problem18
+
+-- 1000000
+problem69 :: Int -> Int
+problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes'
 
 -- 1000000000
 problem94 :: Int -> Int
