@@ -331,6 +331,18 @@ problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes' -- len
     primeSums :: Int -> [Int]
     primeSums n = fmap (sum . take n) $ tails primes'
 
+problem49 :: Int
+problem49 = problem49' ps (tail ps) (drop 2 ps)
+  where
+    problem49' (p1:ps1) (p2:ps2) (p3:ps3)
+      | p2 - p1 < p3 - p2 = problem49' (p1:ps1)     ps2  (p3:ps3)
+      | p2 - p1 > p3 - p2 = problem49' (p1:ps1) (p2:ps2)     ps3
+      | isPermutation p1 p2 && isPermutation p1 p3 && (p1,p2) /= (1487,4817) = 100000000*p1 + 10000*p2 + p3
+      | otherwise = problem49' (p1:ps1) ps2 ps3
+    problem49' (_:ps1) _ _ = problem49' ps1 (drop 1 ps1) (drop 2 ps1)
+    ps = dropWhile (<=1000) $ takeWhile (<10000) primes'
+    isPermutation a b = (sort $ toDigits a) == (sort $ toDigits b)
+
 -- 6
 problem52 :: Int -> Int
 problem52 n = let xs = concatMap (\a -> [a`div`10..a`div`n]) (iterate (*10) 100)
