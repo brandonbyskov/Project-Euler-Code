@@ -338,7 +338,7 @@ problem49 = problem49' ps (tail ps) (drop 2 ps)
       | p2 - p1 < p3 - p2 = problem49' (p1:ps1)     ps2  (p3:ps3)
       | p2 - p1 > p3 - p2 = problem49' (p1:ps1) (p2:ps2)     ps3
       | isPermutation p1 p2 && isPermutation p1 p3 && (p1,p2) /= (1487,4817) = 100000000*p1 + 10000*p2 + p3
-      | otherwise = problem49' (p1:ps1) ps2 ps3
+      | otherwise         = problem49' (p1:ps1)     ps2      ps3
     problem49' (_:ps1) _ _ = problem49' ps1 (drop 1 ps1) (drop 2 ps1)
     ps = dropWhile (<=1000) $ takeWhile (<10000) primes'
     isPermutation a b = (sort $ toDigits a) == (sort $ toDigits b)
@@ -417,6 +417,14 @@ problem67 = problem18
 -- 1000000
 problem69 :: Int -> Int
 problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes'
+
+-- 10000000
+problem92 :: Int -> Int
+problem92 limit = length . filter (==89) . fmap digitChain $ [1..(limit-1)]
+  where
+    digitChain 1  = 1
+    digitChain 89 = 89
+    digitChain x  = digitChain . sum . fmap (^2) . toDigits $ x
 
 -- 1000000000
 problem94 :: Int -> Int
