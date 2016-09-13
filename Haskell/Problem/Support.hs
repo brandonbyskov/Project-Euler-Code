@@ -104,6 +104,10 @@ isPalindrome x
 isPandigital :: Integral a => a -> Bool
 isPandigital x = [1..9] == sort (toDigits x)
 
+isTriangular :: Integral a => a -> Bool
+isTriangular x = let a = sqrRoot (2*x)
+                 in x == (a*a + a) `div` 2
+
 isSquare :: Integral a => a -> Bool
 isSquare x = let r = sqrRoot x
              in x == r*r
@@ -123,6 +127,9 @@ squareNumbers = scanl1 (+) [1,3..]
 pentagonalNumbers :: [Int]
 pentagonalNumbers = scanl1 (+) [1,4..]
 
+hexagonalNumbers :: [Int]
+hexagonalNumbers = scanl1 (+) [1,5..]
+
 -- Sorting Functions
 
 -- Zip Sort can quickly merge two sorted lists.
@@ -130,29 +137,36 @@ zipSort :: Ord a => [a] -> [a] -> [a]
 zipSort []     ys = ys
 zipSort xs     [] = xs
 zipSort (x:xs) (y:ys)
-      | x <= y    = x:zipSort  xs   (y:ys)
-      | otherwise = y:zipSort (x:xs) ys
+  | x <= y    = x:zipSort  xs   (y:ys)
+  | otherwise = y:zipSort (x:xs) ys
 
 zipSortBy :: (a -> a -> Ordering) -> [a] -> [a] -> [a]
 zipSortBy _ [] ys = ys
 zipSortBy _ xs [] = xs
 zipSortBy f (x:xs) (y:ys)
-      | f x y /= GT = x:zipSortBy f  xs   (y:ys)
-      | otherwise   = y:zipSortBy f (x:xs) ys
+  | f x y /= GT = x:zipSortBy f  xs   (y:ys)
+  | otherwise   = y:zipSortBy f (x:xs) ys
 
 -- creates a sorted set
 zipSortSet :: Ord a => [a] -> [a] -> [a]
 zipSortSet []     ys = ys
 zipSortSet xs     [] = xs
 zipSortSet (x:xs) (y:ys)
-      | x == y    =   zipSortSet (x:xs) ys
-      | x < y     = x:zipSortSet  xs   (y:ys)
-      | otherwise = y:zipSortSet (x:xs) ys
+  | x == y    =   zipSortSet (x:xs) ys
+  | x < y     = x:zipSortSet  xs   (y:ys)
+  | otherwise = y:zipSortSet (x:xs) ys
 
 -- creates the difference xs - ys
 zipSortDiff :: Ord a => [a] -> [a] -> [a]
 zipSortDiff (x:xs) (y:ys)
-      | x == y    =   zipSortDiff  xs    ys
-      | x < y     = x:zipSortDiff  xs   (y:ys)
-      | otherwise =   zipSortDiff (x:xs) ys
+  | x == y    =   zipSortDiff  xs    ys
+  | x < y     = x:zipSortDiff  xs   (y:ys)
+  | otherwise =   zipSortDiff (x:xs) ys
 zipSortDiff xs _ = xs
+
+zipSortIntersect :: Ord a => [a] -> [a] -> [a]
+zipSortIntersect (x:xs) (y:ys)
+  | x < y     =   zipSortIntersect  xs   (y:ys)
+  | y < x     =   zipSortIntersect (x:xs) ys
+  | otherwise = x:zipSortIntersect  xs    ys
+zipSortIntersect _ _ = []

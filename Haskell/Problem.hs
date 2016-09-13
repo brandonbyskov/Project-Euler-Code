@@ -312,6 +312,10 @@ problem44 = problem44' pentagonalNumbers (tail pentagonalNumbers) (maxBound :: I
              then minD
              else problem44' ps1' ps2 (minimum $ minD:ds)
 
+problem45 :: Int -> Int
+problem45 n = head . dropWhile (<=n)
+            $ triangularNumbers `zipSortIntersect` (pentagonalNumbers `zipSortIntersect` hexagonalNumbers)
+
 problem46 :: Int
 problem46 = head . filter (not . f) $ zipSortDiff [9,11..] primes'
   where
