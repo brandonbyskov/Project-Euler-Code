@@ -108,10 +108,20 @@ isSquare :: Integral a => a -> Bool
 isSquare x = let r = sqrRoot x
              in x == r*r
 
+isPentagonal :: Integral a => a -> Bool
+isPentagonal x = let a = (ceiling . sqrt . (/1.5) . fromIntegral $ x)
+                 in x == (a*(3*a-1))`div`2
+
 -- Number Lists
 
-squares :: [Int]
-squares = 1:zipWith (+) [3,5..] squares
+triangularNumbers :: [Int]
+triangularNumbers = scanl1 (+) [1..]
+
+squareNumbers :: [Int]
+squareNumbers = scanl1 (+) [1,3..]
+
+pentagonalNumbers :: [Int]
+pentagonalNumbers = scanl1 (+) [1,4..]
 
 -- Sorting Functions
 

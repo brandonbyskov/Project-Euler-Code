@@ -59,13 +59,7 @@ problem5 max = problem5' 2
 
 --100
 problem6 :: Int -> Int
-problem6 n = squareOfSum [1..n] - sumOfSquares [1..n]
-  where
-    squareOfSum :: (Integral a) => [a] -> a
-    squareOfSum xs = (sum xs)^2
-    --
-    sumOfSquares :: (Integral a) => [a] -> a
-    sumOfSquares xs = sum . fmap (\ x -> x*x) $ xs
+problem6 n = (sum1ToN n)^2 - (sum . take n $ squareNumbers)
 
 -- 10001
 problem7 :: Int -> Int
@@ -120,9 +114,7 @@ problem11 dataFile = readGrid dataFile
 
 -- 500
 problem12 :: Int -> Int
-problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ triangleNumbers
-  where
-    triangleNumbers = scanl1 (+) [1..]
+problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ triangularNumbers
 
 -- "data/p013.txt"
 problem13 :: String -> IO Int
@@ -310,6 +302,16 @@ problem41 = maximum . filter isPrime $ pandigitals
     pandigitals :: [Int]
     pandigitals = fmap (sum . zipWith (*) (iterate (10*) 1)) $ concatMap (\n -> permutations [1..n]) [1..9]
 
+problem44 :: Int
+problem44 = problem44' pentagonalNumbers (tail pentagonalNumbers) (maxBound :: Int)
+  where
+    problem44' ps1 (p2:ps2) minD
+      = let ps1' = dropWhile (\a -> p2 - a >= minD) ps1
+            ds   = fmap (p2-) . filter (\a -> isPentagonal (p2+a) && isPentagonal (p2-a)) $ takeWhile (< p2) ps1'
+        in if head ps1' == p2
+             then minD
+             else problem44' ps1' ps2 (minimum $ minD:ds)
+
 problem46 :: Int
 problem46 = head . filter (not . f) $ zipSortDiff [9,11..] primes'
   where
@@ -478,7 +480,7 @@ problem125 n = sum . foldr1 zipSortSet
              . fmap (filter isPalindrome)
              . takeWhile (not . null)
              . fmap (takeWhile (<n) . tail . scanl1 (+))
-             $ tails squares
+             $ tails squareNumbers
 
 --
 --problem352 :: Int -> Double
