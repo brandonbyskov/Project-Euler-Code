@@ -14,11 +14,7 @@ primes' = let ps = drop 3 primes'
           in 2:3:5:7:[x | x <- drop 4 divisorList, not (hasPrimeDivisors x ps)]
 
 hasPrimeDivisors :: Int -> [Int] -> Bool
-hasPrimeDivisors x (p:ps)
-  | p > root  = False
-  | otherwise = (isDivisible p x) || (hasPrimeDivisors x ps)
-  where
-    root = sqrRoot x
+hasPrimeDivisors x ps = any (\p -> isDivisible p x) . takeWhile (<= sqrRoot x) $ ps
 
 divisorList :: [Int]
 divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..] )
@@ -29,7 +25,7 @@ divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..]
 isPrime :: Int -> Bool
 isPrime x
   | x < 5     = x == 2 || x == 3
-  | otherwise = not . or . fmap (\a -> isDivisible a x) . takeWhile (<= sqrRoot x) $ divisorList
+  | otherwise = not . any (\a -> isDivisible a x) . takeWhile (<= sqrRoot x) $ divisorList
 
 getNextPrime :: Int -> Int
 getNextPrime x
@@ -57,15 +53,15 @@ properDivisors :: Int -> [Int]
 properDivisors = init . divisors
 
 -- True if x is divisible by d
-isDivisible :: (Integral a) => a -> a -> Bool
+isDivisible :: Integral a => a -> a -> Bool
 isDivisible d x = (x `mod` d) == 0
 
-numDivisors :: (Integral a) => a -> a
+numDivisors :: Integral a => a -> a
 numDivisors x
   | x <= 1    = if x == 1 then 1 else 0
   | otherwise = 2 + addDivisors 2 (sqrRoot x) x
   where
-    addDivisors :: (Integral a) => a -> a -> a -> a
+    addDivisors :: Integral a => a -> a -> a -> a
     addDivisors d root x
       | d >= root       = if d*d == x then 1 else 0
       | isDivisible d x = 2 + addDivisors (d+1) root x
@@ -79,7 +75,7 @@ digitsToInt = fromIntegral . sum . zipWith (*) (iterate (10*) 1) . reverse
 numDigits :: Integral a => a -> Int
 numDigits = length . show . toInteger
 
-toDigits :: (Integral a) => a -> [Int]
+toDigits :: Integral a => a -> [Int]
 toDigits = fmap digitToInt . show . toInteger
 
 reverseDigits :: Integral a => a -> a
@@ -88,14 +84,14 @@ reverseDigits = digitsToInt . reverse . toDigits
 -- General Math Functions
 
 -- Factorial grows very quickly. Use type Integer for n > 20
-factorial :: (Integral a) => a -> a
+factorial :: Integral a => a -> a
 factorial n = foldl' (*) 1 [2..n]
 
 -- equivalent to sum [1..n]
 sum1ToN :: Integral a => a -> a
 sum1ToN n = n*(n+1) `div` 2
 
-sqrRoot :: (Integral a) => a -> a
+sqrRoot :: Integral a => a -> a
 sqrRoot = floor . sqrt . fromIntegral
 
 -- Number Tests
@@ -107,6 +103,10 @@ isPalindrome x
 
 isPandigital :: Integral a => a -> Bool
 isPandigital x = [1..9] == sort (toDigits x)
+
+isSquare :: Integral a => a -> Bool
+isSquare x = let r = sqrRoot x
+             in x == r*r
 
 -- Number Lists
 
@@ -138,3 +138,11 @@ zipSortSet (x:xs) (y:ys)
       | x == y    =   zipSortSet (x:xs) ys
       | x < y     = x:zipSortSet  xs   (y:ys)
       | otherwise = y:zipSortSet (x:xs) ys
+
+-- creates the difference xs - ys
+zipSortDiff :: Ord a => [a] -> [a] -> [a]
+zipSortDiff (x:xs) (y:ys)
+      | x == y    =   zipSortDiff  xs    ys
+      | x < y     = x:zipSortDiff  xs   (y:ys)
+      | otherwise =   zipSortDiff (x:xs) ys
+zipSortDiff xs _ = xs

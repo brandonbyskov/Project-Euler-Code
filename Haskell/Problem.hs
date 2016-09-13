@@ -310,6 +310,11 @@ problem41 = maximum . filter isPrime $ pandigitals
     pandigitals :: [Int]
     pandigitals = fmap (sum . zipWith (*) (iterate (10*) 1)) $ concatMap (\n -> permutations [1..n]) [1..9]
 
+problem46 :: Int
+problem46 = head . filter (not . f) $ zipSortDiff [9,11..] primes'
+  where
+    f x = any (\p -> isSquare ((x-p)`div`2)) . takeWhile (<=x-2) $ tail primes'
+
 -- 4
 problem47 :: Int -> Int
 problem47 n = head . head
