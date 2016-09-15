@@ -193,6 +193,17 @@ problem23 = sum1ToN 28123 - sum (takeWhile (<= 28123) abundantSums)
     abundantSums = foldr1 (\ (x:xs) (ys) -> (x+x):zipSortSet (fmap (x+) (xs)) ys) (tails abundantNumbers)
     abundantNumbers = filter (\x -> x < sum (properDivisors x)) [12..]
 
+-- 1000000
+problem24 :: Int -> String
+problem24 n = fmap intToDigit $ problem24 (n-1) ds
+  where
+    ds = [0..9]
+    problem24 0 xs = xs
+    problem24 n xs = let len     = length xs
+                         (d, n') = n `divMod` factorial (len-1)
+                         digit   = xs!!d
+                     in digit:problem24 n' (delete digit xs)
+
 -- 1000
 problem25 :: Int -> Int
 problem25 digits = fst . head . dropWhile (\a -> snd a < 10^(digits-1) ) . zip [1..] $ fibs
