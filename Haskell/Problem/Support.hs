@@ -85,7 +85,7 @@ reverseDigits = digitsToInt . reverse . toDigits
 
 -- Factorial grows very quickly. Use type Integer for n > 20
 factorial :: Integral a => a -> a
-factorial n = foldl' (*) 1 [2..n]
+factorial n = product [1..n]
 
 -- equivalent to sum [1..n]
 sum1ToN :: Integral a => a -> a
@@ -162,6 +162,7 @@ zipSortDiff (x:xs) (y:ys)
   | x == y    =   zipSortDiff  xs    ys
   | x < y     = x:zipSortDiff  xs   (y:ys)
   | otherwise =   zipSortDiff (x:xs) ys
+zipSortDiff [] _ = []
 zipSortDiff xs _ = xs
 
 zipSortIntersect :: Ord a => [a] -> [a] -> [a]
@@ -170,3 +171,10 @@ zipSortIntersect (x:xs) (y:ys)
   | y < x     =   zipSortIntersect (x:xs) ys
   | otherwise = x:zipSortIntersect  xs    ys
 zipSortIntersect _ _ = []
+
+zipSortIntersectBy :: (a -> a -> Ordering) -> [a] -> [a] -> [a]
+zipSortIntersectBy f (x:xs) (y:ys)
+  | f x y == LT =   zipSortIntersectBy f  xs   (y:ys)
+  | f x y == GT =   zipSortIntersectBy f (x:xs) ys
+  | otherwise   = x:zipSortIntersectBy f  xs    ys
+zipSortIntersectBy _ _ _ = []

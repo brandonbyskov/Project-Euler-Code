@@ -497,6 +497,24 @@ problem125 n = sum . foldr1 zipSortSet
              . fmap (takeWhile (<n) . tail . scanl1 (+))
              $ tails squareNumbers
 
+-- 1000
+problem150 :: Int -> Int
+problem150 n = let pyramid = (reverse . take n $ buildPyramid 1 $ generator 0)
+               in problem150' (tail pyramid) (fmap (:[]) . head $ pyramid) (replicate (n-1) []) (maxBound :: Int)
+  where
+    problem150' :: [[Int]] -> [[Int]] -> [[Int]] -> Int -> Int
+    problem150'  []      _    _     minVal = minVal
+    problem150' (xs:xss) subs diffs minVal = let subs'   = mkSubTriangle xs subs diffs
+                                                 minVal' = minimum . (minVal:) . fmap minimum $ subs'
+                                             in problem150' xss (zipWith (:) xs subs') (init . tail $ subs) $! minVal'
+    mkSubTriangle [] _ _ = []
+    mkSubTriangle (x:xs) (ys1:ys2:yss) (ds:dss) = (zipWith3 (\y1 y2 d -> x + y1 + y2 - d) ys1 ys2 (0:ds)):mkSubTriangle xs (ys2:yss) dss
+    generator :: Int -> [Int]
+    generator t = let t' = (615949*t + 797807) `mod` 1048576
+                  in (t' - 524288):generator t'
+    buildPyramid n xs = let (ys, zs) = splitAt n xs
+                        in ys:buildPyramid (n+1) zs
+
 --
 --problem352 :: Int -> Double
 --problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])
