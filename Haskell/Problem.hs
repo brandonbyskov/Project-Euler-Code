@@ -255,10 +255,8 @@ problem30 :: Int -> Int
 problem30 n = sum $ filter (\x -> x == (sum . fmap (^n) . toDigits $ x)) [10..(9^n)*(n+1)]
 
 problem32 :: Int
-problem32 = sum . listToSet . sort $ concatMap f cases
+problem32 = sum . listToSet . sort . concatMap f $ permutations [1..9]
   where
-    cases :: [[Int]]
-    cases = permutations [1,2,3,4,5,6,7,8,9]
     f :: [Int] -> [Int]
     f xs = let (ys, c') = splitAt 5 xs
                (a1, b1) = splitAt 1 ys
@@ -269,6 +267,12 @@ problem32 = sum . listToSet . sort $ concatMap f cases
                 else []
     test :: Int -> Int -> Int -> Bool
     test a b c = a * b == c
+
+problem33 :: Int
+problem33 = (\(a, b) -> denominator (a%b)) . foldr1 (\(a, b) (a', b') -> (a*a', b*b')) $ filter p cases
+  where
+    cases = filter (\(a,b) -> a < b) $ concatMap (\a -> fmap (\b-> (a, b)) [1..9]) [1..9]
+    p (a, b) = any (\(x, y) -> x*b == y*a) . fmap (\n-> (10*a + n, 10*n + b)) $ dropWhile (<= a) [1..9]
 
 problem34 :: Int
 problem34 = sum . filter predicate $ [10..2540160]
