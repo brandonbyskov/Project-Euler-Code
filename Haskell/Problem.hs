@@ -254,6 +254,22 @@ problem29 a = length $ distinctPowers 2
 problem30 :: Int -> Int
 problem30 n = sum $ filter (\x -> x == (sum . fmap (^n) . toDigits $ x)) [10..(9^n)*(n+1)]
 
+problem32 :: Int
+problem32 = sum . listToSet . sort $ concatMap f cases
+  where
+    cases :: [[Int]]
+    cases = permutations [1,2,3,4,5,6,7,8,9]
+    f :: [Int] -> [Int]
+    f xs = let (ys, c') = splitAt 5 xs
+               (a1, b1) = splitAt 1 ys
+               (a2, b2) = splitAt 2 ys
+               c        = digitsToInt c'
+           in if test (head a1) (digitsToInt b1) c || test (digitsToInt a2) (digitsToInt b2) c
+                then [c]
+                else []
+    test :: Int -> Int -> Int -> Bool
+    test a b c = a * b == c
+
 problem34 :: Int
 problem34 = sum . filter predicate $ [10..2540160]
   where
@@ -323,6 +339,7 @@ problem44 = problem44' pentagonalNumbers (tail pentagonalNumbers) (maxBound :: I
              then minD
              else problem44' ps1' ps2 (minimum $ minD:ds)
 
+-- 40755
 problem45 :: Int -> Int
 problem45 n = head . dropWhile (<=n)
             $ triangularNumbers `zipSortIntersect` (pentagonalNumbers `zipSortIntersect` hexagonalNumbers)

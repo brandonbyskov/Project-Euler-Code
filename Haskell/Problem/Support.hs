@@ -130,6 +130,15 @@ pentagonalNumbers = scanl1 (+) [1,4..]
 hexagonalNumbers :: [Int]
 hexagonalNumbers = scanl1 (+) [1,5..]
 
+-- List Transformations
+
+-- converts a sorted list to a set
+listToSet :: Eq a => [a] -> [a]
+listToSet (x:y:xs)
+  | x == y    = x:listToSet xs
+  | otherwise = x:listToSet (y:xs)
+listToSet xs  = xs
+
 -- Sorting Functions
 
 -- Zip Sort can quickly merge two sorted lists.
