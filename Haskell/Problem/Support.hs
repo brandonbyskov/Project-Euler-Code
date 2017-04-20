@@ -139,6 +139,10 @@ listToSet (x:y:xs)
   | otherwise = x:listToSet (y:xs)
 listToSet xs  = xs
 
+-- Combinations of size n where each element is not necessarily distinct
+nonDistinctCombinations :: Int -> [a] -> [[a]]
+nonDistinctCombinations n xs = (iterate (\ys -> concatMap (\as -> fmap (:as) xs) ys) $ fmap (\a -> [a]) xs) !! (n-1)
+
 -- Sorting Functions
 
 -- Zip Sort can quickly merge two sorted lists.

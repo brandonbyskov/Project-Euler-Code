@@ -3,6 +3,7 @@ module Problem where
 import Problem.FileIO
 import Problem.Support
 
+import Data.Bits (xor)
 import Data.Char (digitToInt, intToDigit, ord)
 import Data.List
 import Data.Maybe (fromJust)
@@ -118,7 +119,7 @@ problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ tri
 
 -- "data/p013.txt"
 problem13 :: String -> IO Int
-problem13 dataFile = readIntegers dataFile
+problem13 dataFile = readIntegerLines dataFile
                      >>= return . fromIntegral . (\a -> a `div` 10^(numDigits a - 10)) . sum
 
 -- 1000000
@@ -434,6 +435,17 @@ problem58 max = problem58' 3 3 0 1 2
     problem58' x corner numPrimes counted increment
       | isPrime x = problem58' (x+increment) (corner-1) (numPrimes+1) (counted+1) increment
       | otherwise = problem58' (x+increment) (corner-1)  numPrimes    (counted+1) increment
+
+-- "data/p059.txt" " the "
+problem59 :: String -> String -> IO Int
+problem59 dataFile searchString = readIntList dataFile
+                 >>= (\m -> return . sum . head . filter (isInfixOf str) $ fmap (decrypt m) keys)
+  where
+    decrypt :: [Int] -> [Int] -> [Int]
+    decrypt message key = zipWith xor message (cycle key)
+    keys :: [[Int]]
+    keys = nonDistinctCombinations 3 [97..122]
+    str = fmap ord searchString
 
 problem63 :: Int
 problem63 = sum

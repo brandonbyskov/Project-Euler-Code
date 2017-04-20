@@ -16,15 +16,22 @@ readGrid path = openFile path ReadMode
 readNames :: String -> IO [String]
 readNames path = openFile path ReadMode
                  >>= hGetContents
-                 >>= return . split . filter (/= '\"')  
-  where
-    split :: String -> [String]
-    split [] = []
-    split cs  = case span (/= ',') cs of
-    			  (word, [])   -> word:[]
-    			  (word, rest) -> word:split (tail rest)
+                 >>= return . splitOn ',' . filter (/= '\"')
 
-readIntegers :: String -> IO [Integer]
-readIntegers path = openFile path ReadMode
+readIntegerLines :: String -> IO [Integer]
+readIntegerLines path = openFile path ReadMode
                     >>= hGetContents
                     >>= return . fmap read . lines
+
+readIntList :: String -> IO [Int]
+readIntList path = openFile path ReadMode
+               >>= hGetContents
+               >>= return . fmap read . splitOn ','
+
+-- File parsing
+
+splitOn :: Char -> String -> [String]
+splitOn d s = let (a,s') = break (==d) s
+              in if null s'
+                   then [a]
+                   else a:splitOn d (tail s')
