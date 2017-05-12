@@ -447,6 +447,32 @@ problem59 dataFile searchString = readIntList dataFile
     keys = nonDistinctCombinations 3 [97..122]
     str = fmap ord searchString
 
+problem61 :: Int
+problem61 = sum . fmap extract . head
+          . filter (\xs -> length xs == 6) . fmap (nubBy (\(a,_,_,_) (b,_,_,_) -> a==b) ) . filter (isCycle)
+          . concatMap (\a-> fmap (a:) (match 5 a) ) $ triNums
+  where
+    toDetails (n, x) = let (f,l) = x `divMod` 100 in (n,x,f,l)
+    numberLists = fmap (dropWhile (<1000) . takeWhile (<10000))
+                $ [ squareNumbers
+                  , pentagonalNumbers
+                  , hexagonalNumbers
+                  , scanl1 (+) [1,6..]
+                  , scanl1 (+) [1,7..]
+                  ]
+    extract (_,a,_,_) = a
+    sortedDetails = concat
+                  . (fmap . fmap) toDetails . zipWith (\a bs -> fmap (\b-> (a,b)) bs) [(4::Int)..]
+                  $ numberLists
+    triNums       = fmap toDetails . fmap (\b-> (3,b)) . dropWhile (<1000) . takeWhile (<10000) $ triangularNumbers
+    match 1 (_,_,_,l) = let matches = filter (\(_,_,f,_) -> f == l) sortedDetails
+                        in fmap (\a -> [a]) matches
+    match n (_,_,_,l) = let matches = filter (\(_,_,f,_) -> f == l) sortedDetails
+                        in concatMap (\a -> fmap (a:) (match (n-1) a) ) matches
+    isCycle xs = let (_,_,_,l) = last xs
+                     (_,_,f,_) = head xs
+                 in f == l
+
 problem63 :: Int
 problem63 = sum
           . fmap (length . takeWhile (== True) . zipWith (==) [1..] . fmap numDigits . (\a -> iterate (*a) a))
