@@ -1,4 +1,4 @@
-module Problem.FileIO where
+module Euler.FileIO where
 
 import System.IO (IOMode(..), hGetContents, openFile)
 import Data.Char (digitToInt)

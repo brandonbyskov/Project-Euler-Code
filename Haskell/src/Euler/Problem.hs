@@ -1,7 +1,7 @@
-module Problem where
+module Euler.Problem where
 
-import Problem.FileIO
-import Problem.Support
+import Euler.FileIO
+import Euler.Support
 
 import Data.Bits (xor)
 import Data.Char (digitToInt, intToDigit, ord)

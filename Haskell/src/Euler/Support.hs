@@ -1,4 +1,4 @@
-module Problem.Support where
+module Euler.Support where
 
 import Data.Char (digitToInt)
 import Data.List
