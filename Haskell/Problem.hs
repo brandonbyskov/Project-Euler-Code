@@ -94,24 +94,24 @@ problem10 n = sum $ takeWhile (< n) primes
 -- "data/p011.txt"
 problem11 :: String -> IO Int
 problem11 dataFile = readGrid dataFile
-                     >>= return . maximum . (\a -> fmap ($a) [maxHorizontal,
+                     >>= return . maximum . (\as->  fmap (maximum . ($as)) [maxHorizontal,
                                                               maxVertical,
                                                               maxForwardDiagonal,
                                                               maxBackDiagonal] )
   where
-    maxHorizontal = maximum . fmap (maximum . (\xs -> zipWith4 (\a b c d -> a*b*c*d) xs (tail xs) (drop 2 xs) (drop 3 xs) ))
-    maxVertical xss        = maximum . fmap (\xss -> case xss of
-                                                       (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) as bs cs ds
-                                                       _               -> 0
-                                            ) $ tails xss
-    maxForwardDiagonal xss = maximum . fmap (\xss -> case xss of
-                                                       (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) (drop 3 as) (drop 2 bs) (tail cs) ds
-                                                       _               -> 0
-                                            ) $ tails xss
-    maxBackDiagonal xss    = maximum . fmap (\xss -> case xss of
-                                                       (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) as (tail bs) (drop 2 cs) (drop 3 ds)
-                                                       _               -> 0
-                                            ) $ tails xss
+    maxHorizontal      = fmap (maximum . (\xs -> zipWith4 (\a b c d -> a*b*c*d) xs (tail xs) (drop 2 xs) (drop 3 xs) ))
+    maxVertical        = fmap (\xss -> case xss of
+                                         (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) as bs cs ds
+                                         _               -> 0
+                            ) . tails
+    maxForwardDiagonal = fmap (\xss -> case xss of
+                                         (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) (drop 3 as) (drop 2 bs) (tail cs) ds
+                                         _               -> 0
+                              ) . tails
+    maxBackDiagonal    = fmap (\xss -> case xss of
+                                         (as:bs:cs:ds:_) -> maximum $ zipWith4 (\a b c d -> a*b*c*d) as (tail bs) (drop 2 cs) (drop 3 ds)
+                                         _               -> 0
+                              ) . tails
 
 -- 500
 problem12 :: Int -> Int
