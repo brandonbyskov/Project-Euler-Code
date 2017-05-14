@@ -6,15 +6,7 @@ import Data.List
 --Prime functions
 
 primes :: [Int]
-primes = 2:[x | x <- tail divisorList, isPrime x]
-
--- This prime number generator is much faster, but is memory expensive.
-primes' :: [Int]
-primes' = let ps = drop 3 primes'
-          in 2:3:5:7:[x | x <- drop 4 divisorList, not (hasPrimeDivisors x ps)]
-
-hasPrimeDivisors :: Int -> [Int] -> Bool
-hasPrimeDivisors x ps = any (\p -> isDivisible p x) . takeWhile (<= sqrRoot x) $ ps
+primes = filter isPrime divisorList
 
 divisorList :: [Int]
 divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..] )
@@ -22,10 +14,27 @@ divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..]
     primesShortList :: [Int]
     primesShortList = [1,7,11,13,17,19,23,29] 
 
+-- based on Miller-Rabin primality test
 isPrime :: Int -> Bool
 isPrime x
-  | x < 5     = x == 2 || x == 3
-  | otherwise = not . any (\a -> isDivisible a x) . takeWhile (<= sqrRoot x) $ divisorList
+  | x < 5 || even x = x == 2 || x == 3
+  | otherwise       = not . or $ fmap compositeTest as
+  where
+    compositeTest :: Int -> Bool
+    compositeTest a = let first = powerMod (a`mod`x) d x
+                      in (first /= 1) && (all (/= (x - 1)) . take maxS $ iterate (\n -> (n * n) `mod` x) first)
+    as
+      | x < 291831              = [126401071349994536]
+      | x < 624732421           = [15, 5511855321103177]
+      | x < 4759123141          = [2,7,61]
+      | x < 1122004669633       = [2,13,23,1662803]
+      | x < 2152302898747       = [2,3,5,7,11]
+      | x < 3474749660383       = [2,3,5,7,11,13]
+      | x < 341550071728321     = [2,3,5,7,11,13,17]
+      | x < 3825123056546413051 = [2,3,5,7,11,13,17,19,23]
+      | otherwise               = [2,3,5,7,11,13,17,19,23,29,31,37]
+    (d, maxS) = factor (x - 1) 0
+factor n c = if odd n then (n,c) else factor (n`div`2) (c+1)
 
 getNextPrime :: Int -> Int
 getNextPrime x
@@ -86,6 +95,19 @@ reverseDigits = digitsToInt . reverse . toDigits
 -- Factorial grows very quickly. Use type Integer for n > 20
 factorial :: Integral a => a -> a
 factorial n = product [1..n]
+
+-- (b^e) mod m, without a stack overflow. The optimizations assume that
+-- m <= 3037000499.
+powerMod :: Int -> Int -> Int -> Int
+powerMod b e m = (powerMod' b e m) `mod` m
+  where
+    powerMod' b 1 m = shorten b m
+    powerMod' b e m = let (e', bit) = e `divMod` 2 -- maybe change to e div 2, and odd e on next line
+                          b'        = shorten b m
+                      in if bit == 1
+                           then shorten (b' * powerMod' (b' * b') e' m) m
+                           else      powerMod' (b' * b') e' m
+    shorten a m = if a > 3037000499 then a `mod` m else a
 
 -- equivalent to sum [1..n]
 sum1ToN :: Integral a => a -> a

@@ -64,7 +64,7 @@ problem6 n = (sum1ToN n)^2 - (sum . take n $ squareNumbers)
 
 -- 10001
 problem7 :: Int -> Int
-problem7 n = primes'!!(n-1)
+problem7 n = primes!!(n-1)
 
 -- 13 "data/p008.txt"
 problem8 :: Int -> String -> IO Int
@@ -89,7 +89,7 @@ problem9 n = problem9' 1 (n`div`2 - 1) (n - n`div`2)
 
 -- 2000000
 problem10 :: Int -> Int
-problem10 n = sum $ takeWhile (< n) primes'
+problem10 n = sum $ takeWhile (< n) primes
 
 -- "data/p011.txt"
 problem11 :: String -> IO Int
@@ -229,7 +229,7 @@ problem26 n = fst . maximumBy (comparing snd) . fmap recipCycle $ [1..n-1]
 
 -- 1000
 problem27 :: Int -> Int
-problem27 n = let bs = takeWhile (< n) primes'
+problem27 n = let bs = takeWhile (< n) primes
                   a' = if even n then n - 1 else n - 2
                   as = [negate a',(negate a' + 2)..a']
               in (\(a,b,c) -> a*b ) . maximumBy (comparing (\(a,b,c) -> c)) $ [(a,b,consecutivePrimes a b) | a <- as, b <- bs]
@@ -350,9 +350,9 @@ problem45 n = head . dropWhile (<=n)
             $ triangularNumbers `zipSortIntersect` (pentagonalNumbers `zipSortIntersect` hexagonalNumbers)
 
 problem46 :: Int
-problem46 = head . filter (not . f) $ zipSortDiff [9,11..] primes'
+problem46 = head . filter (not . f) $ zipSortDiff [9,11..] primes
   where
-    f x = any (\p -> isSquare ((x-p)`div`2)) . takeWhile (<=x-2) $ tail primes'
+    f x = any (\p -> isSquare ((x-p)`div`2)) . takeWhile (<=x-2) $ tail primes
 
 -- 4
 problem47 :: Int -> Int
@@ -368,12 +368,12 @@ problem48 x = fromIntegral . (`mod` 10000000000) . sum . fmap (\a -> a^a ) $ [1.
 
 -- 1000000
 problem50 :: Int -> Int
-problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes' -- length of longest possible chain
+problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes -- length of longest possible chain
                 in head . concat . fmap (filter isPrime . takeWhile (< max) . primeSums) $ [a, a-1 .. 1]
   where
     -- sums of n consecutive primes
     primeSums :: Int -> [Int]
-    primeSums n = fmap (sum . take n) $ tails primes'
+    primeSums n = fmap (sum . take n) $ tails primes
 
 problem49 :: Int
 problem49 = problem49' ps (tail ps) (drop 2 ps)
@@ -384,7 +384,7 @@ problem49 = problem49' ps (tail ps) (drop 2 ps)
       | isPermutation p1 p2 && isPermutation p1 p3 && (p1,p2) /= (1487,4817) = 100000000*p1 + 10000*p2 + p3
       | otherwise         = problem49' (p1:ps1)     ps2      ps3
     problem49' (_:ps1) _ _ = problem49' ps1 (drop 1 ps1) (drop 2 ps1)
-    ps = dropWhile (<=1000) $ takeWhile (<10000) primes'
+    ps = dropWhile (<=1000) $ takeWhile (<10000) primes
     isPermutation a b = (sort $ toDigits a) == (sort $ toDigits b)
 
 -- 6
@@ -497,7 +497,7 @@ problem67 = problem18
 
 -- 1000000
 problem69 :: Int -> Int
-problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes'
+problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes
 
 -- 10000000
 problem92 :: Int -> Int
@@ -583,7 +583,7 @@ problem150 n = let pyramid = (reverse . take n $ buildPyramid 1 $ generator 0)
 
 -- 1000000000000000
 problem401 :: Int -> Int
-problem401 n = problem401' ( n) 1 0 0
+problem401 n = problem401' n 1 0 0
   where
     problem401' :: Int -> Int -> Int -> Int -> Int
     problem401' n value lastSS sum
@@ -620,13 +620,13 @@ problem500 divisors = let trim = \x -> if x >= 500500507 then x `mod` 500500507 
   where
     -- These functions create a sorted infinite list of primes and their powers
     powersOfPrimes :: Int -> [Int]
-    powersOfPrimes 0 = zipSort primes' (powersOfPrimes 1)
-    powersOfPrimes n = (2^2^n):zipSort (fmap (^2^n) $ tail primes') (powersOfPrimes (n+1))
+    powersOfPrimes 0 = zipSort primes (powersOfPrimes 1)
+    powersOfPrimes n = (2^2^n):zipSort (fmap (^2^n) $ tail primes) (powersOfPrimes (n+1))
 
 -- Correct but too slow. Needs a better prime number algorithm, 
 -- or take advantage of geometric series.
 problem518 :: Int -> Int
-problem518 n = problem518' (1+head primes') primes' (tail primes') 0
+problem518 n = problem518' (1+head primes) primes (tail primes) 0
   where
     problem518' :: Int -> [Int] -> [Int] -> Int -> Int
     problem518' n1 (p1:ps1) (p2:ps2) acc =
@@ -634,7 +634,7 @@ problem518 n = problem518' (1+head primes') primes' (tail primes') 0
             diff = n2*n2
             c    = diff `div` n1 - 1
         in if c < n
-           then if (diff `mod` n1 == 0) && not (hasPrimeDivisors c primes')
+           then if (diff `mod` n1 == 0) && (isPrime c)
                   then problem518' n1 (p1:ps1) ps2 (acc + p1 + p2 + c)
                   else problem518' n1 (p1:ps1) ps2 acc
            else if p1 >= limit
