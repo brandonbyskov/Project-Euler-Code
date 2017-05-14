@@ -1,2 +1,4 @@
 Cpp/Debug/
-Haskell/dist
+
+Haskell/dist/
+Haskell/.stack-work/

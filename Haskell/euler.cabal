@@ -17,5 +17,8 @@ cabal-version:       >=1.8
 executable euler
   main-is:             Main.hs
   other-modules:       
+    Problem
+    Problem.FileIO
+    Problem.Support
   build-depends:       base >=4.6
   ghc-options:         -O "-with-rtsopts=-M512M -K16M"
