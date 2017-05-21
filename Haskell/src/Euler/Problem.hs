@@ -501,11 +501,14 @@ problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes
 
 -- 100
 problem76 :: Int -> Int
-problem76 n = (head $ buildXs n) - 1
+problem76 n = (last xs) - 1
   where
-    buildXs 1 = repeat 1
-    buildXs n = zipWith (+) (tail $ buildXs (n-1)) ((take n heads ++ buildXs n)) 
-    heads = 1:fmap (head . buildXs) [1..]
+    xs = 1:1:buildXs 2 (repeat 1)
+    buildXs i as
+      | i > n = []
+      | otherwise = let bs = (take i xs) ++ (a':as')
+                        (a':as') = zipWith (+) as bs
+                    in a':buildXs (i+1) as'
 
 -- 10000000
 problem92 :: Int -> Int
