@@ -68,13 +68,11 @@ isDivisible d x = (x `mod` d) == 0
 numDivisors :: Integral a => a -> a
 numDivisors x
   | x <= 1    = if x == 1 then 1 else 0
-  | otherwise = 2 + addDivisors 2 (sqrRoot x) x
+  | otherwise = fromIntegral $ 2
+              + (2 * (length . filter (\d -> isDivisible d x) $ [2..root]))
+              - if root*root == x then 1 else 0
   where
-    addDivisors :: Integral a => a -> a -> a -> a
-    addDivisors d root x
-      | d >= root       = if d*d == x then 1 else 0
-      | isDivisible d x = 2 + addDivisors (d+1) root x
-      | otherwise       =     addDivisors (d+1) root x
+    root = sqrRoot x
 
 -- Digit Functions 
 
