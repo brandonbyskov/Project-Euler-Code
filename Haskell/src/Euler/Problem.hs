@@ -499,6 +499,14 @@ problem67 = problem18
 problem69 :: Int -> Int
 problem69 limit = last . takeWhile (<= limit) $ scanl1 (*) primes
 
+-- 100
+problem76 :: Int -> Int
+problem76 n = (head $ buildXs n) - 1
+  where
+    buildXs 1 = repeat 1
+    buildXs n = zipWith (+) (tail $ buildXs (n-1)) ((take n heads ++ buildXs n)) 
+    heads = 1:fmap (head . buildXs) [1..]
+
 -- 10000000
 problem92 :: Int -> Int
 problem92 limit = length . filter (==89) . fmap digitChain $ [1..(limit-1)]
