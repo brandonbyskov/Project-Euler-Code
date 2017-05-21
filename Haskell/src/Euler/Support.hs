@@ -77,7 +77,7 @@ numDivisors x
 -- Digit Functions 
 
 digitsToInt :: Integral a => [Int] -> a
-digitsToInt = fromIntegral . sum . zipWith (*) (iterate (10*) 1) . reverse
+digitsToInt = sum . zipWith (*) (iterate (10*) 1) . reverse . fmap fromIntegral
 
 numDigits :: Integral a => a -> Int
 numDigits = length . show . toInteger
