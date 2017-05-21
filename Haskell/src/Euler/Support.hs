@@ -62,10 +62,10 @@ properDivisors :: Int -> [Int]
 properDivisors = init . divisors
 
 -- True if x is divisible by d
-isDivisible :: Integral a => a -> a -> Bool
+isDivisible :: Int -> Int -> Bool
 isDivisible d x = (x `mod` d) == 0
 
-numDivisors :: Integral a => a -> a
+numDivisors :: Int -> Int
 numDivisors x
   | x <= 1    = if x == 1 then 1 else 0
   | otherwise = fromIntegral $ 2
@@ -108,10 +108,10 @@ powerMod b e m = (powerMod' b e m) `mod` m
     shorten a m = if a > 3037000499 then a `mod` m else a
 
 -- equivalent to sum [1..n]
-sum1ToN :: Integral a => a -> a
+sum1ToN :: Int -> Int
 sum1ToN n = n*(n+1) `div` 2
 
-sqrRoot :: Integral a => a -> a
+sqrRoot :: Int -> Int
 sqrRoot = floor . sqrt . fromIntegral
 
 -- Number Tests
@@ -124,15 +124,15 @@ isPalindrome x
 isPandigital :: Integral a => a -> Bool
 isPandigital x = [1..9] == sort (toDigits x)
 
-isTriangular :: Integral a => a -> Bool
+isTriangular :: Int -> Bool
 isTriangular x = let a = sqrRoot (2*x)
                  in x == (a*a + a) `div` 2
 
-isSquare :: Integral a => a -> Bool
+isSquare :: Int -> Bool
 isSquare x = let r = sqrRoot x
              in x == r*r
 
-isPentagonal :: Integral a => a -> Bool
+isPentagonal :: Int -> Bool
 isPentagonal x = let a = (ceiling . sqrt . (/1.5) . fromIntegral $ x)
                  in x == (a*(3*a-1))`div`2
 
