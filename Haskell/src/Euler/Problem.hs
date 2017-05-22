@@ -69,7 +69,7 @@ problem7 n = primes!!(n-1)
 -- 13 "data/p008.txt"
 problem8 :: Int -> String -> IO Int
 problem8 n dataFile = readDigits dataFile
-                      >>= return . maximum . fmap problem8' . tails
+                  >>= return . maximum . fmap problem8' . tails
   where
     problem8' xs = let sublist = take n xs
                    in if length sublist >= n
@@ -94,10 +94,11 @@ problem10 n = sum $ takeWhile (< n) primes
 -- "data/p011.txt"
 problem11 :: String -> IO Int
 problem11 dataFile = readGrid dataFile
-                     >>= return . maximum . (\as->  fmap (maximum . ($as)) [maxHorizontal,
-                                                              maxVertical,
-                                                              maxForwardDiagonal,
-                                                              maxBackDiagonal] )
+                 >>= return . maximum . (\as->  fmap (maximum . ($as)) [ maxHorizontal
+                                                                       , maxVertical
+                                                                       , maxForwardDiagonal
+                                                                       , maxBackDiagonal
+                                                                       ] )
   where
     maxHorizontal      = fmap (maximum . (\xs -> zipWith4 (\a b c d -> a*b*c*d) xs (tail xs) (drop 2 xs) (drop 3 xs) ))
     maxVertical        = fmap (\xss -> case xss of
@@ -120,7 +121,7 @@ problem12 minDivisors = head . filter (\x -> numDivisors x >= minDivisors) $ tri
 -- "data/p013.txt"
 problem13 :: String -> IO Int
 problem13 dataFile = readIntegerLines dataFile
-                     >>= return . fromIntegral . (\a -> a `div` 10^(numDigits a - 10)) . sum
+                 >>= return . fromIntegral . (\a -> a `div` 10^(numDigits a - 10)) . sum
 
 -- 1000000
 problem14 :: Int -> Int
@@ -448,7 +449,7 @@ problem58 max = problem58' 3 3 0 1 2
 -- "data/p059.txt" " the "
 problem59 :: String -> String -> IO Int
 problem59 dataFile searchString = readIntList dataFile
-                 >>= (\m -> return . sum . head . filter (isInfixOf str) $ fmap (decrypt m) keys)
+                              >>= (\m -> return . sum . head . filter (isInfixOf str) $ fmap (decrypt m) keys)
   where
     decrypt :: [Int] -> [Int] -> [Int]
     decrypt message key = zipWith xor message (cycle key)
