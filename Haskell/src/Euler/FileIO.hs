@@ -13,8 +13,8 @@ readGrid path = openFile path ReadMode
                 >>= hGetContents
                 >>= return . fmap (fmap read . words) . lines
 
-readNames :: String -> IO [String]
-readNames path = openFile path ReadMode
+readStrings :: String -> IO [String]
+readStrings path = openFile path ReadMode
                  >>= hGetContents
                  >>= return . splitOn ',' . filter (/= '\"')
 

@@ -183,8 +183,8 @@ problem21 n = sum . filter predicate $ [2..n]
 
 -- "data/p022.txt"
 problem22 :: String -> IO Int
-problem22 dataFile = readNames dataFile
-                     >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
+problem22 dataFile = readStrings dataFile
+                 >>= return . sum . zipWith (*) [1,2..] . fmap (sum . fmap letterToValue) . sort
   where
     letterToValue c = (ord c) - 64
 
@@ -333,6 +333,15 @@ problem41 = maximum . filter isPrime $ pandigitals
   where
     pandigitals :: [Int]
     pandigitals = fmap (sum . zipWith (*) (iterate (10*) 1)) $ concatMap (\n -> permutations [1..n]) [1..9]
+
+-- "data/p042.txt"
+problem42 :: String -> IO Int
+problem42 dataFile = readStrings dataFile
+                 >>= return . length . filter isTriangular . fmap sum . (fmap . fmap) letterToValue
+  where
+    letterToValue :: Char -> Int
+    letterToValue c = (ord c) - 64
+
 
 problem44 :: Int
 problem44 = problem44' pentagonalNumbers (tail pentagonalNumbers) (maxBound :: Int)
