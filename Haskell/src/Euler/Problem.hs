@@ -376,15 +376,6 @@ problem47 n = head . head
 problem48 :: Int -> Int
 problem48 x = fromIntegral . (`mod` 10000000000) . sum . fmap (\a -> a^a ) $ [1..toInteger x]
 
--- 1000000
-problem50 :: Int -> Int
-problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes -- length of longest possible chain
-                in head . concat . fmap (filter isPrime . takeWhile (< max) . primeSums) $ [a, a-1 .. 1]
-  where
-    -- sums of n consecutive primes
-    primeSums :: Int -> [Int]
-    primeSums n = fmap (sum . take n) $ tails primes
-
 problem49 :: Int
 problem49 = problem49' ps (tail ps) (drop 2 ps)
   where
@@ -396,6 +387,15 @@ problem49 = problem49' ps (tail ps) (drop 2 ps)
     problem49' (_:ps1) _ _ = problem49' ps1 (drop 1 ps1) (drop 2 ps1)
     ps = dropWhile (<=1000) $ takeWhile (<10000) primes
     isPermutation a b = (sort $ toDigits a) == (sort $ toDigits b)
+
+-- 1000000
+problem50 :: Int -> Int
+problem50 max = let a = length . takeWhile (< max) . scanl1 (+) $ primes -- length of longest possible chain
+                in head . concat . fmap (filter isPrime . takeWhile (< max) . primeSums) $ [a, a-1 .. 1]
+  where
+    -- sums of n consecutive primes
+    primeSums :: Int -> [Int]
+    primeSums n = fmap (sum . take n) $ tails primes
 
 -- 6
 problem52 :: Int -> Int
