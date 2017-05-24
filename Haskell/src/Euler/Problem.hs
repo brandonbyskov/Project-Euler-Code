@@ -569,6 +569,17 @@ problem119 n = snd . (!! (n - 1)) . filter (\(a,b) -> sum (toDigits b) == a) $ f
     f x   = (x,x*x):zipSortBy (comparing snd) (g x) (f (x+1))
     g x = iterate (\(_,b) -> (x, x * b)) (x,x^3)
 
+-- 10000000000
+problem123 :: Int -> Int
+problem123 limit = fromIntegral . fst . head . dropWhile (\(n,r) -> r <= fromIntegral limit)
+                 . fmap remainder . dropWhile (\(n,p) -> p < (fromIntegral . sqrRoot $ limit))
+                 $ zip [1..] (fmap fromIntegral primes)
+  where
+    remainder :: (Integer,Integer) -> (Integer,Integer)
+    remainder (n,p) = let pSqr = p*p
+                          r    = (`mod`pSqr) $ (powerMod (p-1) n pSqr) + (powerMod (p+1) n pSqr)
+                      in (n, r)
+
 -- 100000000
 problem125 :: Int -> Int
 problem125 n = sum . foldr1 zipSortSet

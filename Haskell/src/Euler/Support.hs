@@ -96,7 +96,7 @@ factorial n = product [1..n]
 
 -- (b^e) mod m, without a stack overflow. The optimizations assume that
 -- m <= 3037000499.
-powerMod :: Int -> Int -> Int -> Int
+powerMod :: Integral a => a -> a -> a -> a
 powerMod b e m = (powerMod' b e m) `mod` m
   where
     powerMod' b 1 m = shorten b m
