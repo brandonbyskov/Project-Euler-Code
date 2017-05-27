@@ -630,7 +630,7 @@ problem401 n = problem401' n 1 0 0
     problem401' n value lastSS sum
       | n < value =  sum
       | otherwise = do
-        let count = n `div` value -- the number of Ints < n that have the same divisors
+        let count = n `div` value   -- the number of Ints < n that have the same divisors
         let divisor = n `div` count -- the highest divisor that shares the same frequency in the range
         --get the sum of all divisors^2 that share the same frequency of occurence
         let sumSquares' = squarePyramidal divisor
@@ -667,18 +667,16 @@ problem500 divisors = let trim = \x -> if x >= 500500507 then x `mod` 500500507 
 -- Correct but too slow. Needs a better prime number algorithm, 
 -- or take advantage of geometric series.
 problem518 :: Int -> Int
-problem518 n = problem518' (1+head primes) primes (tail primes) 0
+problem518 n = sum . fmap sum
+             $ zipWith partialSum (takeWhile (<= limit) ns) (tail $ tails ns)
   where
-    problem518' :: Int -> [Int] -> [Int] -> Int -> Int
-    problem518' n1 (p1:ps1) (p2:ps2) acc =
-        let n2   = p2 + 1
-            diff = n2*n2
-            c    = diff `div` n1 - 1
-        in if c < n
-           then if (diff `mod` n1 == 0) && (isPrime c)
-                  then problem518' n1 (p1:ps1) ps2 (acc + p1 + p2 + c)
-                  else problem518' n1 (p1:ps1) ps2 acc
-           else if p1 >= limit
-                  then acc
-                  else problem518' (1+head ps1) ps1 (tail ps1) acc
+    partialSum :: Int -> [Int] -> [Int]
+    partialSum n1 (n2:ns2) =
+        let (n3,r) = (n2*n2) `divMod` n1
+        in if n3 <= n
+           then if r == 0 && isPrime (n3 - 1)
+                  then (n1 + n2 + n3 - 3):partialSum n1 ns2
+                  else partialSum n1 ns2
+           else []
     limit = n - 2 * sqrRoot n
+    ns = fmap (+1) primes
