@@ -537,6 +537,15 @@ problem94 limit = sum $ takeWhile (<= limit) perimeters
 problem97 :: Int
 problem97 = fromIntegral . (`mod`10000000000) $ 1 + 28433 * 2^7830457
 
+-- 1000000000000
+problem100 :: Int -> Int
+problem100 n = fst . head . dropWhile ((<= n) . snd)
+             . fmap (\(a, b) -> ((a`div`2) + 1, (b`div`2) + 1))
+             . filter (\(a, b) -> even (a + b)) $ continuedFracs
+  where
+    continuedFracs :: [(Int,Int)]
+    continuedFracs = fmap (\(num, den) -> (den, num+den)) $ iterate (\(num, den) -> (den, 2 * den + num)) (12, 29)
+
 problem104 :: Int
 problem104 = 1 + fromJust (elemIndex True (map pandigitalTest fib))
   where
