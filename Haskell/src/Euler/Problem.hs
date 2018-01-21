@@ -648,6 +648,21 @@ problem277 str n = let (x, d1) = findMin str (zip [1..] [1..]) (1,1)
                                        xys' = iterate (\(x,y) -> (x+d1', y+d2')) . (\(x,y) -> (x,(2*y - 1)`div`3)) . head . filter (\(_,y) -> y`mod`3 == 2 ) $ xys
                                    in findMin cs xys' (d1', d2')
 
+-- 32
+problem323 :: Int -> Double
+problem323 bits = expectedValues!!(bits-1)
+  where
+    expectedValues :: [Double]
+    expectedValues = fmap expected [1..]
+    expected z = let total = 2^z
+                     x = sum . zipWith (*) (fmap fromIntegral . init $ triangle z) $ 1:fmap (+1) expectedValues
+                     y = (/total) . foldr1 (\a b -> a+(b/total)) $ take (64`div`z) [total-1+x, 2*(total-1)+x..]
+                 in (x + y)/total
+    triangle :: Int -> [Int]
+    triangle 1 = [1,1]
+    triangle n = let tn1 = triangle $ n-1
+                 in 1:(zipWith (+) (tail tn1) tn1) ++ [1]
+
 --
 --problem352 :: Int -> Double
 --problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])
