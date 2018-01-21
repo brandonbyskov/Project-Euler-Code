@@ -629,6 +629,25 @@ problem150 n = let pyramid = (reverse . take n $ buildPyramid 1 $ generator 0)
     buildPyramid n xs = let (ys, zs) = splitAt n xs
                         in ys:buildPyramid (n+1) zs
 
+-- "UDDDUdddDDUDDddDdDddDDUDDdUUDd" 1000000000000000
+problem277 :: String -> Int -> Int
+problem277 str n = let (x, d1) = findMin str (zip [1..] [1..]) (1,1)
+                   in head . filter (>n) $ iterate (+d1) x
+  where
+    findMin :: String -> [(Int, Int)] -> (Int, Int) -> (Int,Int)
+    findMin [] ((x,_):_) (d1,_)  = (x, d1)
+    findMin ('D':cs) xys (d1,d2) = let d1'  = 3*d1
+                                       xys' = iterate (\(x,y) -> (x+d1', y+d2 )) . (\(x,y) -> (x,y`div`3))         . head . filter (\(_,y) -> y`mod`3 == 0 ) $ xys
+                                   in findMin cs xys' (d1', d2 )
+    findMin ('U':cs) xys (d1,d2) = let d1'  = 3*d1
+                                       d2'  = 4*d2
+                                       xys' = iterate (\(x,y) -> (x+d1', y+d2')) . (\(x,y) -> (x,(4*y + 2)`div`3)) . head . filter (\(_,y) -> y`mod`3 == 1 ) $ xys
+                                   in findMin cs xys' (d1', d2')
+    findMin ('d':cs) xys (d1,d2) = let d1'  = 3*d1
+                                       d2'  = 2*d2
+                                       xys' = iterate (\(x,y) -> (x+d1', y+d2')) . (\(x,y) -> (x,(2*y - 1)`div`3)) . head . filter (\(_,y) -> y`mod`3 == 2 ) $ xys
+                                   in findMin cs xys' (d1', d2')
+
 --
 --problem352 :: Int -> Double
 --problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])
