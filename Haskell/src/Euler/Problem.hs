@@ -663,6 +663,27 @@ problem323 bits = expectedValues!!(bits-1)
     triangle n = let tn1 = triangle $ n-1
                  in 1:(zipWith (+) (tail tn1) tn1) ++ [1]
 
+-- (21^7) (7^21) (12^7)
+problem340 :: Int -> Int -> Int -> Int
+problem340 a b c = let fb        = f b
+                       fbMinusa  = f (b-a)
+                       delta     = trim $ fbMinusa - fb
+                       xs        = take (b`div`a) $ iterate (\x -> trim $ x + delta) (trim fb)
+                       lastX     = trim $ (trim fb) + trim ((trim (b`div`a))*delta)
+                       remaining = (b+1)`mod`a
+                       remainder = if (remaining > 0) then trim $ lastX * remaining - (sum1ToN $ remaining - 1) else 0
+                       parts     = fmap (\x -> trim $ x*(trim a) - (trim $ sum1ToN (a-1))) $ xs
+                   in foldl1' (\x y -> trim $ x+y) (remainder:parts)
+  where
+    f n
+      | n > b     = n - c
+      | otherwise = fStack 4 (n+ a)
+    fStack t n
+      | t == 0    = n - a
+      | n > b     = fStack (t - 1) (a + n - c)
+      | otherwise = fStack (t + 3) (a + n)
+    trim x = x`mod`1000000000
+
 --
 --problem352 :: Int -> Double
 --problem352 sample = sum(fmap (minTests sample) [(fromIntegral p)/100 | p <- [1,2..50]])
