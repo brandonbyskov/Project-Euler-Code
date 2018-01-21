@@ -483,6 +483,20 @@ problem61 = sum . fmap extract . head
                      (_,_,f,_) = head xs
                  in f == l
 
+-- 5
+problem62 :: Int -> Int
+problem62 n = fst . head
+            . head . dropWhile (\as -> (length as) < n) . concat
+            . fmap (groupBy (\(_,a) (_,b) -> a == b))
+            . fmap (\as -> sortBy (comparing (digitsToInt . snd)) as)
+            $ (fmap . fmap) (\a -> (a, (sort $ toDigits a))) segmentedCubes
+  where
+    cubes = fmap (^3) [1..]
+    segmentedCubes = segment (fmap (\a -> (<a)) $ iterate (*10) 10) cubes
+    segment :: [a -> Bool] -> [a] -> [[a]]
+    segment (p:ps) as = let (as', bs') = span p as
+                        in as':segment ps bs'
+
 problem63 :: Int
 problem63 = sum
           . fmap (length . takeWhile (== True) . zipWith (==) [1..] . fmap numDigits . (\a -> iterate (*a) a))

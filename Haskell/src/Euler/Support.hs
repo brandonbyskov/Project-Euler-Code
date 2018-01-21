@@ -15,6 +15,7 @@ divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..]
     primesShortList = [1,7,11,13,17,19,23,29] 
 
 -- based on Miller-Rabin primality test
+-- Can fail with numbers greater than sqrt 2^63
 isPrime :: Int -> Bool
 isPrime x
   | x < 5 || even x = x == 2 || x == 3
