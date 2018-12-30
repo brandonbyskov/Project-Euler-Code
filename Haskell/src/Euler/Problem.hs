@@ -296,6 +296,14 @@ problem34 = sum . filter predicate $ [10..2540160]
     predicate x = x == (sum . fmap factorial . toDigits $ x)
 
 -- 1000000
+problem35 :: Int -> Int
+problem35 limit = length . filter isCircularPrime $ takeWhile (< limit) primes
+  where
+    isCircularPrime = all isPrime . rotations
+    rotations x = let ds = toDigits x
+                  in map (\n -> digitsToInt . (\(as,bs) -> bs ++ as) $ splitAt n $ toDigits x) [1..numDigits x - 1]
+
+-- 1000000
 problem36 :: Int -> Int
 problem36 max = sum . filter isDoubleBasePalindrome $ [1..max-1]
   where
