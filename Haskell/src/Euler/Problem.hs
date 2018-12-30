@@ -300,8 +300,7 @@ problem35 :: Int -> Int
 problem35 limit = length . filter isCircularPrime $ takeWhile (< limit) primes
   where
     isCircularPrime = all isPrime . rotations
-    rotations x = let ds = toDigits x
-                  in map (\n -> digitsToInt . (\(as,bs) -> bs ++ as) $ splitAt n $ toDigits x) [1..numDigits x - 1]
+    rotations x = map (\n -> digitsToInt . (\(as,bs) -> bs ++ as) . splitAt n $ toDigits x) [1..numDigits x - 1]
 
 -- 1000000
 problem36 :: Int -> Int
@@ -365,6 +364,11 @@ problem42 dataFile = readStrings dataFile
     letterToValue :: Char -> Int
     letterToValue c = (ord c) - 64
 
+problem43 :: Int
+problem43 = sum . map digitsToInt
+          . filter (and . zipWith isDivisible [2,3,5,7,11,13,17] . map (digitsToInt . take 3) . tail . tails)
+          . filter (\xs -> head xs /= 0)
+          $ permutations [0..9]
 
 problem44 :: Int
 problem44 = problem44' pentagonalNumbers (tail pentagonalNumbers) (maxBound :: Int)
