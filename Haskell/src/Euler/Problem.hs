@@ -256,6 +256,20 @@ problem29 a = length $ distinctPowers 2
 problem30 :: Int -> Int
 problem30 n = sum $ filter (\x -> x == (sum . fmap (^n) . toDigits $ x)) [10..(9^n)*(n+1)]
 
+-- 200
+problem31 :: Int -> Int
+problem31 total = sum $ map (\a -> f a coins total) [0..total `div` head coins]
+  where
+    coins = reverse [1,2,5,10,20,50,100,200]
+    f n [x] remaining
+      | n * x == remaining = 1
+      | otherwise = 0
+    f n (x:xs) remaining
+      | n * x == remaining = 1
+      | n * x >  remaining = 0
+      | otherwise = let remaining' = remaining - n * x
+                    in sum $ map (\a -> f a xs remaining') [0..remaining' `div` head xs]
+
 problem32 :: Int
 problem32 = sum . listToSet . sort . concatMap f $ permutations [1..9]
   where
