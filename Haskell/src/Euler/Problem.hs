@@ -560,6 +560,22 @@ problem76 n = (last xs) - 1
                         (a':as') = zipWith (+) as bs
                     in a':buildXs (i+1) as'
 
+-- 5000
+problem77 :: Int -> Int
+problem77 n = head . filter (\a -> numSummations a >= n) $ [2..]
+  where
+    numSummations a = let ps = primes' a
+                      in sum $ map (\x -> f x ps a) [0..a `div` head ps]
+    primes' a = reverse . takeWhile (<= a) $ primes
+    f n [x] remaining
+      | n * x == remaining = 1
+      | otherwise = 0
+    f n (x:xs) remaining
+      | n * x == remaining = 1
+      | n * x >  remaining = 0
+      | otherwise = let remaining' = remaining - n * x
+                    in sum $ map (\a -> f a xs remaining') [0..remaining' `div` head xs]
+
 -- 10000000
 problem92 :: Int -> Int
 problem92 limit = length . filter (==89) . fmap digitChain $ [1..(limit-1)]
