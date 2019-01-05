@@ -171,6 +171,17 @@ problem18 dataFile = readGrid dataFile >>= return . head . foldr1 solveRow
     solveRow []     _          = []
     solveRow (a:as) (b1:b2:bs) = (a + max b1 b2):(solveRow as (b2:bs))
 
+-- 1901 2000 2 0
+-- days of week are represented by: sunday = 0, monday = 1, etc.
+problem19 :: Int -> Int -> Int -> Int -> Int
+problem19 startYear endYear startDay searchDay = length . filter (== searchDay)
+                                               . scanl' (\a b -> (a + b) `mod` 7) startDay
+                                               . init . concat $ map months [startYear..endYear]
+  where
+    months year
+      | year `mod` 4 == 0 && (year `mod` 100 /= 0 || year `mod` 400 == 0) = [31,29,31,30,31,30,31,31,30,31,30,31]
+      | otherwise = [31,28,31,30,31,30,31,31,30,31,30,31]
+
 -- 100
 problem20 :: Integer -> Int
 problem20 x = sum .toDigits . factorial $ x
