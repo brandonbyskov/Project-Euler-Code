@@ -2,3 +2,6 @@ Cpp/Debug/
 
 Haskell/dist/
 Haskell/.stack-work/
+
+.DS_Store
+.idea
