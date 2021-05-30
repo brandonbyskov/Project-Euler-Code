@@ -18,6 +18,11 @@ readStrings path = openFile path ReadMode
                  >>= hGetContents
                  >>= return . splitOn ',' . filter (/= '\"')
 
+readStringLines :: String -> IO [String]
+readStringLines path = openFile path ReadMode
+                   >>= hGetContents
+                   >>= return . lines
+
 readIntegerLines :: String -> IO [Integer]
 readIntegerLines path = openFile path ReadMode
                     >>= hGetContents

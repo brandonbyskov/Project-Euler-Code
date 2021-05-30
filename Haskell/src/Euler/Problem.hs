@@ -20,7 +20,7 @@ problem1 a b max = let f x = x * (sum1ToN $ (max-1) `div` x) -- multiples of x l
 problem2 :: Int -> Int
 problem2 max = sum $ takeWhile (< max) evenFibs
   where
-    evenFibs :: [Int]  
+    evenFibs :: [Int]
     evenFibs = 2:8:(zipWith (\a b ->a+4*b) evenFibs (tail evenFibs))
 
 -- 600851475143
@@ -541,7 +541,7 @@ problem63 = sum
 
 -- 100
 problem65 :: Int -> Int
-problem65 maxIter 
+problem65 maxIter
   | maxIter <= 0 = 0
   | otherwise    = sum . toDigits . numerator $ e 1 maxIter
   where
@@ -586,6 +586,49 @@ problem77 n = head . filter (\a -> numSummations a >= n) $ [2..]
       | n * x >  remaining = 0
       | otherwise = let remaining' = remaining - n * x
                     in sum $ map (\a -> f a xs remaining') [0..remaining' `div` head xs]
+
+-- "data/p089.txt"
+problem89 :: String -> IO Int
+problem89 dataFile = do
+  romanNumerals <- readStringLines dataFile
+  let numCharacters = sum $ fmap length romanNumerals
+  let simplifiedRomanNumerals = fmap (intToRomanNumeral . romanNumeralToInt) romanNumerals
+  let numCharactersSimplifiedRomanNumerals = sum $ fmap length simplifiedRomanNumerals
+  return (numCharacters - numCharactersSimplifiedRomanNumerals)
+  where
+    romanDigitToInt :: Char -> Int
+    romanDigitToInt 'I' = 1
+    romanDigitToInt 'V' = 5
+    romanDigitToInt 'X' = 10
+    romanDigitToInt 'L' = 50
+    romanDigitToInt 'C' = 100
+    romanDigitToInt 'D' = 500
+    romanDigitToInt 'M' = 1000
+
+    romanNumeralToInt :: String -> Int
+    romanNumeralToInt xs = romanNumeralToInt' $ fmap romanDigitToInt xs
+      where
+        romanNumeralToInt' :: [Int] -> Int
+        romanNumeralToInt' [x] = x
+        romanNumeralToInt' (x1:x2:xs) = if x1 < x2
+          then (romanNumeralToInt' (x2:xs)) - x1
+          else (romanNumeralToInt' (x2:xs)) + x1
+
+    intToRomanNumeral :: Int -> String
+    intToRomanNumeral x
+      | x >= 1000 = 'M':intToRomanNumeral (x - 1000)
+      | x >= 900 = 'C':'M':intToRomanNumeral (x - 900)
+      | x >= 500 = 'D':intToRomanNumeral (x - 500)
+      | x >= 400 = 'C':'D':intToRomanNumeral (x - 400)
+      | x >= 100 = 'C':intToRomanNumeral (x - 100)
+      | x >= 90 = 'X':'C':intToRomanNumeral (x - 90)
+      | x >= 50 = 'L':intToRomanNumeral (x - 50)
+      | x >= 40 = 'X':'L':intToRomanNumeral (x - 40)
+      | x >= 10 = 'X':intToRomanNumeral (x - 10)
+      | x >= 9 = 'I':'X':intToRomanNumeral (x - 9)
+      | x >= 5 = 'V':intToRomanNumeral (x - 5)
+      | x == 4 = 'I':'V':[]
+      | x <= 3 = replicate x 'I'
 
 -- 10000000
 problem92 :: Int -> Int
@@ -786,7 +829,7 @@ problem500 divisors = let trim = \x -> if x >= 500500507 then x `mod` 500500507 
     powersOfPrimes 0 = zipSort primes (powersOfPrimes 1)
     powersOfPrimes n = (2^2^n):zipSort (fmap (^2^n) $ tail primes) (powersOfPrimes (n+1))
 
--- Correct but too slow. Needs a better prime number algorithm, 
+-- Correct but too slow. Needs a better prime number algorithm,
 -- or take advantage of geometric series.
 problem518 :: Int -> Int
 problem518 n = sum . fmap sum
