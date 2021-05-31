@@ -630,6 +630,18 @@ problem89 dataFile = do
       | x == 4 = 'I':'V':[]
       | x <= 3 = replicate x 'I'
 
+problem90 :: Int
+problem90 = length
+          . filter (\[xs,ys] -> containsAllPairs xs ys)
+          $ distinctCombinations 2 cubeArrangements
+  where
+    neededPairs = [(0,1),(0,4),(0,6),(1,6),(2,5),(3,6),(4,6),(8,1)]
+    availableNums = [0,1,2,3,4,5,6,7,8,6]
+    cubeArrangements = distinctCombinations 6 availableNums
+    containsPair (p1,p2) xs ys = (p1 `elem` xs && p2 `elem` ys) || (p2 `elem` xs && p1 `elem` ys)
+    containsAllPairs :: [Int] -> [Int] -> Bool
+    containsAllPairs xs ys = all (\p -> containsPair p xs ys) neededPairs
+
 -- 10000000
 problem92 :: Int -> Int
 problem92 limit = length . filter (==89) . fmap digitChain $ [1..(limit-1)]

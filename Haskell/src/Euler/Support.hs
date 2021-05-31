@@ -12,7 +12,7 @@ divisorList :: [Int]
 divisorList = 2:3:5:(tail $ concatMap (\x -> fmap (x+) primesShortList) [0,30..] )
   where
     primesShortList :: [Int]
-    primesShortList = [1,7,11,13,17,19,23,29] 
+    primesShortList = [1,7,11,13,17,19,23,29]
 
 -- based on Miller-Rabin primality test
 -- Can fail with numbers greater than sqrt 2^63
@@ -52,7 +52,7 @@ divisors x = generateDivisors 1 []
     generateDivisors :: Int -> [Int] -> [Int]
     generateDivisors d upperList
       | d == sqrRoot x  = if isDivisible d x
-                            then if d*d == x 
+                            then if d*d == x
                                    then d:upperList
                                    else d:(x`div`d):upperList
                             else upperList
@@ -75,7 +75,7 @@ numDivisors x
   where
     root = sqrRoot x
 
--- Digit Functions 
+-- Digit Functions
 
 digitsToInt :: Integral a => [Int] -> a
 digitsToInt = sum . zipWith (*) (iterate (10*) 1) . reverse . fmap fromIntegral
@@ -118,7 +118,7 @@ sqrRoot = floor . sqrt . fromIntegral
 -- Number Tests
 
 isPalindrome :: (Integral a, Show a) => a -> Bool
-isPalindrome x 
+isPalindrome x
   | x < 0 = False
   | otherwise = (show x) == reverse (show x)
 
@@ -159,6 +159,13 @@ listToSet (x:y:xs)
   | x == y    = x:listToSet xs
   | otherwise = x:listToSet (y:xs)
 listToSet xs  = xs
+
+-- Combinations of size n where each element is distinct
+distinctCombinations :: Int -> [a] -> [[a]]
+distinctCombinations 1 xs = fmap (:[]) xs
+distinctCombinations n (x:xs) = if n > length xs
+  then fmap (x:) (distinctCombinations (n - 1) xs)
+  else fmap (x:) (distinctCombinations (n - 1) xs) ++ distinctCombinations n xs
 
 -- Combinations of size n where each element is not necessarily distinct
 nonDistinctCombinations :: Int -> [a] -> [[a]]
