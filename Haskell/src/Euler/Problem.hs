@@ -659,6 +659,28 @@ problem94 limit = sum $ takeWhile (<= limit) perimeters
 problem97 :: Int
 problem97 = fromIntegral . (`mod`10000000000) $ 1 + 28433 * 2^7830457
 
+-- "data/p099.txt"
+problem99 :: String -> IO Int
+problem99 dataFile = do
+  pairs <- readIntPairLines dataFile
+  return . fst
+    . maximumBy (simplifyAndCompare snd)
+    $ addIndex pairs
+  where
+    addIndex :: [a] -> [(Int, a)]
+    addIndex = zipWith (\x y -> (x,y)) [1..]
+    simplifyExponents :: ((Double, Int), (Double, Int)) -> ((Double, Int), (Double, Int))
+    simplifyExponents ((a,ea),(b,eb))
+      | ea < 1024 && eb < 1024  && a < 2.0 && b < 2.0 = ((a,ea),(b,eb))
+      | ea < eb = simplifyExponents ((a / b,ea),(b,eb - ea))
+      | ea > eb = simplifyExponents ((a,ea - eb),(b / a,eb))
+      | otherwise = ((a,1),(b,1))
+    simplifyAndCompare :: (b -> (Int, Int)) -> b -> b -> Ordering
+    simplifyAndCompare f a b = let a' = (\(n,e) -> (fromIntegral n,e)) $ f a
+                                   b' = (\(n,e) -> (fromIntegral n,e)) $ f b
+                                   (aSimplified,bSimplified) = simplifyExponents (a',b')
+                               in compare ((\(n,e) -> n^e) aSimplified) ((\(n,e) -> n^e) bSimplified)
+
 -- 1000000000000
 problem100 :: Int -> Int
 problem100 n = fst . head . dropWhile ((<= n) . snd)

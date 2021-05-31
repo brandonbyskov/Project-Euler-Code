@@ -33,6 +33,13 @@ readIntList path = openFile path ReadMode
                >>= hGetContents
                >>= return . fmap read . splitOn ','
 
+readIntPairLines :: String -> IO [(Int,Int)]
+readIntPairLines path = openFile path ReadMode
+                    >>= hGetContents
+                    >>= return
+                      . fmap ((\[a,b] -> (a,b)) . fmap read . (splitOn ','))
+                      . lines
+
 -- File parsing
 
 splitOn :: Char -> String -> [String]
